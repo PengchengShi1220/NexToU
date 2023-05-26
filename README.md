@@ -1,6 +1,6 @@
 # NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation
 
-NexToU is a novel hybrid architecture for medical image segmentation that combines the strengths of Convolutional Neural Networks (CNN), Transformer variants, and Graph Neural Networks (GNN). It addresses the limitations in preserving global image context and efficiently processing irregular shapes, a common struggle in the field of medical image analysis.
+NexToU is a novel hybrid architecture for medical image segmentation that combines the strengths of Convolutional Neural Networks (CNN), and Graph Neural Networks (GNN) variants. It addresses the limitations in preserving global image context and efficiently processing irregular shapes, a common struggle in the field of medical image analysis.
 
 ## Motivation 
 
@@ -8,7 +8,7 @@ Despite the advancements in CNN and Transformer variants, they often struggle to
 
 ## About NexToU
 
-NexToU incorporates improved Pool GNN and Swin GNN modules from Vision GNN (ViG), designed to learn both global and local topological representations while minimizing computational costs. It reformulates the topological interaction (TI) module based on the nature of binary trees, rapidly encoding the topological constraints into NexToU. This unique approach enables effective handling of containment and exclusion relationships among various anatomical structures.
+NexToU incorporates improved Pool GNN and Swin GNN modules from [Vision GNN (ViG)](https://github.com/huawei-noah/Efficient-AI-Backbones/tree/master/vig_pytorch), designed to learn both global and local topological representations while minimizing computational costs. It reformulates the [topological interaction (TI) module](https://github.com/TopoXLab/TopoInteraction) based on the nature of binary trees, rapidly encoding the topological constraints into NexToU. This unique approach enables effective handling of containment and exclusion relationships among various anatomical structures. To maintain consistency in data augmentation and post-processing, we base our NexToU architecture on the [nnU-Net framework](https://github.com/MIC-DKFZ/nnUNet/tree/nnunetv1) which can automatically configure itself for any new medical image segmentation task.
 
 ## Performance 
 
