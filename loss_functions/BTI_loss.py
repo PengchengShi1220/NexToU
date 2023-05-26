@@ -9,7 +9,7 @@ import numpy as np
 
 
 """
-The proposed topological interaction (BTI) module encodes topological interactions by computing the critical voxels map. The critical voxels map contains the locations which induce errors in the topological interactions. The TI loss is introduced based on the topological interaction module.
+The proposed binary topological interaction (BTI) module encodes topological interactions by computing the critical voxels map. The critical voxels map contains the locations which induce errors in the topological interactions. The BTI loss is introduced based on the topological interaction module.
 """
 class BTI_Loss(torch.nn.Module):
     def __init__(self, dim=3, connectivity=26, inclusion=[], exclusion=[], min_thick=1):
@@ -79,7 +79,7 @@ class BTI_Loss(torch.nn.Module):
         self.kernel = torch_kernel = torch.from_numpy(np.expand_dims(np.expand_dims(np_kernel,axis=0), axis=0))
 
 
-    def topological_interaction_module(self, P):
+    def binary_topological_interaction_module(self, P):
         """
         Given a discrete segmentation map and the intended topological interactions, this module computes the critical voxels map.
         :param P: Discrete segmentation map
@@ -95,16 +95,16 @@ class BTI_Loss(torch.nn.Module):
             label_C = to_cuda(torch.tensor(label_C))
 
             # Get Masks
-            # mask_A = torch.where(P == label_A, 1.0, 0.0).double()
-            mask_A = torch.where(torch.isin(P, label_A), 1.0, 0.0).double()
+            # mask_A = torch.where(P == label_A, 1.0, 0.0).double() # TI module
+            mask_A = torch.where(torch.isin(P, label_A), 1.0, 0.0).double() # BTI module
             if interaction_type:
-                # mask_C = torch.where(P == label_C, 1.0, 0.0).double()
-                mask_C = torch.where(torch.isin(P, label_C), 1.0, 0.0).double()
+                # mask_C = torch.where(P == label_C, 1.0, 0.0).double() # TI module
+                mask_C = torch.where(torch.isin(P, label_C), 1.0, 0.0).double() # BTI module
                 mask_C = torch.logical_or(mask_C, mask_A).double()
                 mask_C = torch.logical_not(mask_C).double()
             else:
-                # mask_C = torch.where(P == label_C, 1.0, 0.0).double()
-                mask_C = torch.where(torch.isin(P, label_C), 1.0, 0.0).double()
+                # mask_C = torch.where(P == label_C, 1.0, 0.0).double() # TI module
+                mask_C = torch.where(torch.isin(P, label_C), 1.0, 0.0).double()  # BTI module
             
             # Get Neighbourhood Information
             neighbourhood_C = self.conv_op(mask_C, self.kernel.double(), padding='same')
@@ -143,8 +143,8 @@ class BTI_Loss(torch.nn.Module):
         P = torch.unsqueeze(P.double(),dim=1)
         del x_softmax
 
-        # Call the Topological Interaction Module
-        critical_voxels_map = self.topological_interaction_module(P)
+        # Call the Binary Topological Interaction Module
+        critical_voxels_map = self.binary_topological_interaction_module(P)
 
         # Compute the TI loss value
         ce_tensor = torch.unsqueeze(self.ce_loss_func(x.double(),y[:,0].long()),dim=1)
