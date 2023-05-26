@@ -18,11 +18,13 @@ NexToU has been extensively tested on three different datasets, each featuring d
 
 NexToU consists of several main components. The following links will take you directly to the core parts of the codebase:
 
-- Network Architecture: NexToU's network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_architecture/NexToU.py).
+- Network Architecture: The network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_architecture/NexToU.py).
 - Network Training: The file responsible for network training is [nnUNetTrainerV2_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_training/nnUNetTrainerV2_nextou.py).
-- Binary Topological Interaction (BTI) Loss Function: The BTI loss function, key to our topological constraint encoding, is in [BTI_loss.py](https://github.com/PengchengShi1220/NexToU/blob/main/loss_functions/BTI_loss.py).
+- Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [BTI_loss.py](https://github.com/PengchengShi1220/NexToU/blob/main/loss_functions/BTI_loss.py).
 
 To use NexToU in your own projects, you may import the relevant components from these files as per your requirements. Please make sure to comply with the license agreement while using the code.
+
+If you have any issues or questions, feel free to open an issue on our GitHub repository.
 
 ## License
 
