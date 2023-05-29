@@ -1,6 +1,6 @@
 # NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation
 <p align="center">
-  <img src="assets/NexToU.png" alt="NexToU" width="400"/>
+  <img src="assets/NexToU.png" alt="NexToU" width="200"/>
 </p>
 NexToU is a novel hybrid architecture for medical image segmentation that combines the strengths of Convolutional Neural Networks (CNN), and Graph Neural Networks (GNN) variants. It addresses the limitations in preserving global image context and efficiently processing irregular shapes, a common struggle in the field of medical image analysis.
 
