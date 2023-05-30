@@ -1,5 +1,4 @@
 # NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation
-[![GitHub](https://img.shields.io/badge/Project-GitHub-87CEEB)](https://github.com/PengchengShi1220/NexToU)
 [![Paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2305.15911)
 
 ## :bulb: News
