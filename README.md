@@ -1,20 +1,20 @@
 # NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation
+[![GitHub](https://img.shields.io/badge/Project-GitHub-87CEEB)](https://github.com/PengchengShi1220/NexToU)
+[![Paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2305.15911)
+
+## :bulb: News
+* **(May 26, 2023):** NexToU architecture and training codes are released.
+
 <p align="center">
-  <img src="assets/NexToU.png" alt="NexToU" width="200"/>
+  <img src="assets/NexToU.png" alt="NexToU" width="180"/>
 </p>
 NexToU is a novel hybrid architecture for medical image segmentation that combines the strengths of Convolutional Neural Networks (CNN), and Graph Neural Networks (GNN) variants. It addresses the limitations in preserving global image context and efficiently processing irregular shapes, a common struggle in the field of medical image analysis.
 
-## Motivation 
-
-Despite the advancements in CNN and Transformer variants, they often struggle to effectively integrate information from diverse anatomical regions and reduce inter-individual variability, particularly for vasculature. Recognizing the capabilities of GNN in capturing topological properties and non-Euclidean relationships across various fields, we developed NexToU to overcome these challenges.
+> **Abstract:** *Convolutional neural networks (CNN) and Transformer variants have emerged as the leading medical image segmentation backbones. Nonetheless, due to their limitations in either preserving global image context or efficiently processing irregular shapes in visual objects, these backbones struggle to effectively integrate information from diverse anatomical regions and reduce inter-individual variability, particularly for the vasculature. Motivated by the successful breakthroughs of graph neural networks (GNN) in capturing topological properties and non-Euclidean relationships across various fields, we propose NexToU, a novel hybrid architecture for medical image segmentation. NexToU comprises improved Pool GNN and Swin GNN modules from Vision GNN (ViG) for learning both global and local topological representations while minimizing computational costs. To address the containment and exclusion relationships among various anatomical structures, we reformulate the topological interaction (TI) module based on the nature of binary trees, rapidly encoding the topological constraints into NexToU. Extensive experiments conducted on three datasets (including distinct imaging dimensions, disease types, and imaging modalities) demonstrate that our method consistently outperforms other state-of-the-art (SOTA) architectures.* 
 
 ## About NexToU
 
 NexToU incorporates improved Pool GNN and Swin GNN modules from [Vision GNN (ViG)](https://github.com/huawei-noah/Efficient-AI-Backbones/tree/master/vig_pytorch), designed to learn both global and local topological representations while minimizing computational costs. It reformulates the [topological interaction (TI)](https://github.com/TopoXLab/TopoInteraction) module based on the nature of binary trees, rapidly encoding the topological constraints into NexToU. This unique approach enables effective handling of containment and exclusion relationships among various anatomical structures. To maintain consistency in data augmentation and post-processing, we base our NexToU architecture on the [nnU-Net](https://github.com/MIC-DKFZ/nnUNet/tree/nnunetv1) framework which can automatically configure itself for any new medical image segmentation task.
-
-## Performance 
-
-NexToU has been extensively tested on three different datasets, each featuring distinct imaging dimensions, disease types, and imaging modalities. In all cases, NexToU outperformed other state-of-the-art (SOTA) architectures in medical image segmentation tasks.
 
 ## Usage
 
@@ -32,6 +32,15 @@ If you have any issues or questions, feel free to open an issue on our GitHub re
 
 NexToU is licensed under the Apache License 2.0. For more information, please see the [LICENSE](LICENSE) file in this repository.
 
-## References
+## Citation
+If you use NexToU in your research, please cite:
 
-- NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation. Available at: [https://arxiv.org/abs/2305.15911](https://arxiv.org/abs/2305.15911)
+```
+@article{shi2023nextou,
+  title={NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation},
+  author={Shi, Pengcheng and Guo, Xutao and Yang, Yanwu and Ye, Chenfei and Ma, Ting},
+  journal={arXiv preprint arXiv:2305.15911},
+  year={2023}
+}
+```
+
