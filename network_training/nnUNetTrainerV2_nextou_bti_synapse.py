@@ -1,4 +1,4 @@
-# 2022.03.16-Changed for training NexToU with BTI loss on BTCV datasets
+# 2023.03.16-Changed for training NexToU with BTI loss on BTCV datasets
 #            Harbin Institute of Technology (Shenzhen), <pcshi@stu.hit.edu.cn>
 
 #    Copyright 2020 Division of Medical Image Computing, German Cancer Research Center (DKFZ), Heidelberg, Germany
