@@ -1,4 +1,4 @@
-# 2022.03.16-Changed for building NexToU
+# 2023.03.16-Changed for building NexToU
 #            Harbin Institute of Technology (Shenzhen), <pcshi@stu.hit.edu.cn>
 
 # 2022.06.17-Changed for building ViG model
