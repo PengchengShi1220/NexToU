@@ -1,3 +1,8 @@
+# 2022.03.16-Changed for binary topological interaction (BTI) loss
+#            Harbin Institute of Technology (Shenzhen), <pcshi@stu.hit.edu.cn>
+
+# Topological interaction (TI) loss: https://github.com/TopoXLab/TopoInteraction/blob/main/TI_Loss.py
+
 import torch
 from nnunet.training.loss_functions.TopK_loss import TopKLoss
 from nnunet.training.loss_functions.crossentropy import RobustCrossEntropyLoss
@@ -6,7 +11,6 @@ from nnunet.utilities.tensor_utilities import sum_tensor
 from nnunet.utilities.to_torch import to_cuda
 from torch import nn
 import numpy as np
-
 
 """
 The proposed binary topological interaction (BTI) module encodes topological interactions by computing the critical voxels map. The critical voxels map contains the locations which induce errors in the topological interactions. The BTI loss is introduced based on the topological interaction module.
