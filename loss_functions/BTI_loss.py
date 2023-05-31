@@ -1,4 +1,4 @@
-# 2022.03.16-Changed for binary topological interaction (BTI) loss
+# 2023.03.16-Changed for binary topological interaction (BTI) loss
 #            Harbin Institute of Technology (Shenzhen), <pcshi@stu.hit.edu.cn>
 
 # Topological interaction (TI) loss: https://github.com/TopoXLab/TopoInteraction/blob/main/TI_Loss.py
