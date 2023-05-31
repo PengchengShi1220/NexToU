@@ -17,7 +17,7 @@ The proposed NexToU architecture follows a hierarchical U-shaped encoder-decoder
 
 ## Results
 
-NexToU outperforms state-of-the-art (SOTA) methods in medical image segmentation across various tasks. On the Beyond the Cranial Vault (BTCV) dataset, NexToU achieved an average Dice Similarity Coefficient (DSC) of 87.84% and an average Hausdorff Distance (HD) of 6.33 mm. Additionally, it reached the highest DSC of 74.19% on the Intracranial Aneurysm (ICA) dataset. Best results are in bold.
+NexToU outperforms state-of-the-art (SOTA) methods in medical image segmentation across various tasks. On the Beyond the Cranial Vault (BTCV) dataset, NexToU achieved an average Dice Similarity Coefficient (DSC) of 87.84% and an average Hausdorff Distance (HD) of 6.33 mm. Additionally, it reached the highest DSC of 74.19% on the intracranial arteries (ICA) dataset. Best results are in bold.
 ![BTCV_results](/assets/BTCV_results.jpg)
 ![ICA_results](/assets/ICA_results.jpg)
 
