@@ -58,12 +58,11 @@ cp NexToU/network_architecture/ nnUNet-1.7.1/nnunet/network_architecture/
 cp NexToU/network_training/* nnUNet-1.7.1/nnunet/training/network_training/
 ```
 
-5. Install nnUNet-1.7.1 with the NexToU related function:
+5. Install nnUNet-1.7.1 with the NexToU related function and run it:
 ```
 cd nnUNet-1.7.1 && pip install -e .
 ```
 
-Run NexToU on the following datasets:
 For BTCV dataset:
 ```
 nnUNet_train 3d_fullres nnUNetTrainerV2_NexToU_BTI_Synapse Task111_Synapse_CT 0
