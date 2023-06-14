@@ -37,13 +37,13 @@ NexToU consists of several main components. The following links will take you di
 To incorporate the functionalities of NexToU with nnUNet, follow the steps given below:
 
 1. Clone the NexToU repository from GitHub using the command:
-git clone https://github.com/PengchengShi1220/NexToU.git
+```shell git clone https://github.com/PengchengShi1220/NexToU.git```
 
 2. Download v1.7.1 version of nnUNet using the command:
-wget https://github.com/MIC-DKFZ/nnUNet/archive/refs/tags/v1.7.1.tar.gz
+```shell wget https://github.com/MIC-DKFZ/nnUNet/archive/refs/tags/v1.7.1.tar.gz```
 
 3. Extract the v1.7.1.tar.gz file using the command:
-tar -zxvf v1.7.1.tar.gz
+```shell tar -zxvf v1.7.1.tar.gz```
 
 4. Copy the NexToU loss functions, network architecture, and network training code files to the corresponding directories in nnUNet-1.7.1 using the following commands:
 cp NexToU/loss_functions/ nnUNet-1.7.1/nnunet/training/loss_functions/
