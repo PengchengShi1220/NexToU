@@ -54,8 +54,8 @@ tar -zxvf v1.7.1.tar.gz
 
 4. Copy the NexToU loss functions, network architecture, and network training code files to the corresponding directories in nnUNet-1.7.1 using the following commands:
 ```
-cp NexToU/loss_functions/ nnUNet-1.7.1/nnunet/training/loss_functions/
-cp NexToU/network_architecture/ nnUNet-1.7.1/nnunet/network_architecture/
+cp NexToU/loss_functions/* nnUNet-1.7.1/nnunet/training/loss_functions/
+cp NexToU/network_architecture/* nnUNet-1.7.1/nnunet/network_architecture/
 cp NexToU/network_training/* nnUNet-1.7.1/nnunet/training/network_training/
 ```
 
