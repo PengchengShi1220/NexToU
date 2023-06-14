@@ -34,7 +34,33 @@ NexToU consists of several main components. The following links will take you di
 - Network Training: The file responsible for network training is [nnUNetTrainerV2_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_training/nnUNetTrainerV2_nextou.py).
 - Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [BTI_loss.py](https://github.com/PengchengShi1220/NexToU/blob/main/loss_functions/BTI_loss.py).
 
-To use NexToU in your own projects, you may import the relevant components from these files as per your requirements. Please make sure to comply with the license agreement while using the code.
+To incorporate the functionalities of NexToU with nnUNet, follow the steps given below:
+
+1. Clone the NexToU repository from GitHub using the command:
+git clone https://github.com/PengchengShi1220/NexToU.git
+
+2. Download v1.7.1 version of nnUNet using the command:
+wget https://github.com/MIC-DKFZ/nnUNet/archive/refs/tags/v1.7.1.tar.gz
+
+3. Extract the v1.7.1.tar.gz file using the command:
+tar -zxvf v1.7.1.tar.gz
+
+4. Copy the NexToU loss functions, network architecture, and network training code files to the corresponding directories in nnUNet-1.7.1 using the following commands:
+cp NexToU/loss_functions/ nnUNet-1.7.1/nnunet/training/loss_functions/
+cp NexToU/network_architecture/ nnUNet-1.7.1/nnunet/network_architecture/
+cp NexToU/network_training/* nnUNet-1.7.1/nnunet/training/network_training/
+
+5. Install nnUNet-1.7.1 with the NexToU related function:
+cd nnUNet-1.7.1 && pip install -e .
+Run NexToU on the following datasets:
+For BTCV dataset:
+nnUNet_train 3d_fullres nnUNetTrainerV2_NexToU_BTI_Synapse Task111_Synapse_CT 0
+For RAVIR dataset:
+nnUNet_train 2d nnUNetTrainerV2_NexToU_BTI_RAVIR Task810_RAVIR_vessel_seg 0
+For ICA dataset:
+nnUNet_train 3d_fullres nnUNetTrainerV2_NexToU_BTI_ICA_noMirroring Task115_angio_MRA_multi_class 0
+
+You can use the relevant components of NexToU in your own projects by importing them from the respective files. Please ensure that you abide by the license agreement while using the code.
 
 If you have any issues or questions, feel free to open an issue on our GitHub repository.
 
