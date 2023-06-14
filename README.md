@@ -2,6 +2,7 @@
 [![Paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2305.15911)
 
 ## :bulb: News
+* **(June 14, 2023):** NexToU installation and running demo updated.
 * **(May 26, 2023):** NexToU architecture and training codes are released.
 
 <p align="center">
