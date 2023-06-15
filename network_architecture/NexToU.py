@@ -202,25 +202,17 @@ class MRConv(nn.Module):
     """
     def __init__(self, in_channels, out_channels, act='relu', norm=None, bias=True, conv_op=nn.Conv3d, dropout_op=nn.Dropout3d):
         super(MRConv, self).__init__()
-        self.conv_op = conv_op
         self.nn = BasicConv([in_channels*2, out_channels], act=act, norm=norm, bias=bias, drop=0., conv_op=conv_op, dropout_op=dropout_op)
 
     def forward(self, x, edge_index, y=None):
-        x_i = batched_index_select(x, edge_index[1], self.conv_op)
+        x_i = batched_index_select(x, edge_index[1])
         if y is not None:
-            x_j = batched_index_select(y, edge_index[0], self.conv_op)
+            x_j = batched_index_select(y, edge_index[0])
         else:
-            x_j = batched_index_select(x, edge_index[0], self.conv_op)
+            x_j = batched_index_select(x, edge_index[0])
         x_j, _ = torch.max(x_j - x_i, -1, keepdim=True)
         b, c, n, _ = x.shape
         x = torch.cat([x.unsqueeze(2), x_j.unsqueeze(2)], dim=2).reshape(b, 2 * c, n, _)
-       
-        if self.conv_op == nn.Conv2d:
-            pass
-        elif self.conv_op == nn.Conv3d:
-            x = torch.unsqueeze(x, dim=4) 
-        else:
-            raise NotImplementedError('conv operation [%s] is not found' % self.conv_op)
         
         return self.nn(x)
 
