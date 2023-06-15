@@ -91,7 +91,7 @@ class BasicConv(Seq):
             
         super(BasicConv, self).__init__(*m)
 
-def batched_index_select(x, idx, conv_op=nn.Conv3d):
+def batched_index_select(x, idx):
     r"""fetches neighbors features from a given neighbor idx
 
     Args:
