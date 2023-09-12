@@ -31,9 +31,9 @@ NexToU outperforms alternative models in inter-class boundary segmentation and p
 
 NexToU consists of several main components. The following links will take you directly to the core parts of the codebase:
 
-- Network Architecture: The network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_architecture/NexToU.py).
-- Network Training: The file responsible for network training is [nnUNetTrainerV2_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_training/nnUNetTrainerV2_nextou.py).
-- Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [BTI_loss.py](https://github.com/PengchengShi1220/NexToU/blob/main/loss_functions/BTI_loss.py).
+- Network Architecture: The network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv1/network_architecture/NexToU.py).
+- Network Training: The file responsible for network training is [nnUNetTrainerV2_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv1/network_training/nnUNetTrainerV2_nextou.py).
+- Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [BTI_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv1/loss_functions/BTI_loss.py).
 
 To incorporate the functionalities of NexToU with nnUNet, follow the steps given below:
 
