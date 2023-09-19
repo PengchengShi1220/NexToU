@@ -134,7 +134,6 @@ class NexToU_Encoder(nn.Module):
             input_channels = features_per_stage[s]
 
         self.stages = nn.Sequential(*stages)
-        # self.stages = nn.ModuleList(stage_modules)
         self.output_channels = features_per_stage
         self.strides = [maybe_convert_scalar_to_list(conv_op, i) for i in strides]
         self.return_skips = return_skips
@@ -153,11 +152,8 @@ class NexToU_Encoder(nn.Module):
     def forward(self, x):
         ret = []
         # print("Encoder: ")
-        # print("x.shape: ", x.shape)
-        # print("len(self.stages): ", len(self.stages))
         for s in self.stages:
             x = s(x)
-            # print("x.shape: ", x.shape)
             ret.append(x)
         if self.return_skips:
             return ret
@@ -301,12 +297,8 @@ class NexToU_Decoder(nn.Module):
         seg_outputs = []
         for s in range(len(self.stages)):
             x = self.transpconvs[s](lres_input)
-            # print("a x.shape: ", x.shape)
-            # print("skips[-(s+2)].shape: ", skips[-(s+2)].shape)
             x = torch.cat((x, skips[-(s+2)]), 1)
-            # print("b x.shape: ", x.shape)
             x = self.stages[s](x)
-            # print("c x.shape: ", x.shape)
             if self.deep_supervision:
                 seg_outputs.append(self.seg_layers[s](x))
             elif s == (len(self.stages) - 1):
