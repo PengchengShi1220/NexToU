@@ -2,8 +2,9 @@
 [![Paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2305.15911)
 
 ## :bulb: News
-* **(June 14, 2023):** NexToU installation and running demo updated.
-* **(May 26, 2023):** NexToU architecture and training codes are released.
+* **(September 19, 2023):** Launched NexToU architecture and training codes for nnU-Net V2.
+* **(June 14, 2023):** Updated NexToU installation and running demo.
+* **(May 26, 2023):** Released NexToU architecture and training codes for nnU-Net V1.
 
 <p align="center">
   <img src="assets/NexToU.png" alt="NexToU" width="180"/>
@@ -72,6 +73,7 @@ If you're using the `3d_fullres_nextou` configuration, make sure to update your 
 "UNet_base_num_features": 24,
 "unet_max_num_features": 312
 }
+```
 
 For BTCV dataset:
 ```
