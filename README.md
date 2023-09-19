@@ -31,9 +31,9 @@ NexToU outperforms alternative models in inter-class boundary segmentation and p
 
 NexToU consists of several main components. The following links will take you directly to the core parts of the codebase:
 
-- Network Architecture: The network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_architecture/NexToU.py).
-- Network Training: The file responsible for network training is [nnUNetTrainerV2_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/main/network_training/nnUNetTrainerV2_nextou.py).
-- Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [BTI_loss.py](https://github.com/PengchengShi1220/NexToU/blob/main/loss_functions/BTI_loss.py).
+- Network Architecture: The network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/network_architecture/NexToU.py) and [NexToU_Encoder_Decoder.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/network_architecture/NexToU_Encoder_Decoder.py).
+- Network Training: The file responsible for network training is [nnUNetTrainer_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_nextou.py).
+- Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [bti_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/loss/bti_loss.py).
 
 To incorporate the functionalities of NexToU with nnUNet, follow the steps given below:
 
@@ -42,41 +42,50 @@ To incorporate the functionalities of NexToU with nnUNet, follow the steps given
 git clone https://github.com/PengchengShi1220/NexToU.git
 ```
 
-2. Download v1.7.1 version of nnUNet using the command:
+2. Download v2.0 version of nnUNet using the command:
 ```
-wget https://github.com/MIC-DKFZ/nnUNet/archive/refs/tags/v1.7.1.tar.gz
-```
-
-3. Extract the v1.7.1.tar.gz file using the command:
-```
-tar -zxvf v1.7.1.tar.gz
+wget https://github.com/MIC-DKFZ/nnUNet/archive/refs/tags/v2.0.tar.gz
 ```
 
-4. Copy the NexToU loss functions, network architecture, and network training code files to the corresponding directories in nnUNet-1.7.1 using the following commands:
+3. Extract the v2.0.tar.gz file using the command:
 ```
-cp NexToU/loss_functions/* nnUNet-1.7.1/nnunet/training/loss_functions/
-cp NexToU/network_architecture/* nnUNet-1.7.1/nnunet/network_architecture/
-cp NexToU/network_training/* nnUNet-1.7.1/nnunet/training/network_training/
+tar -zxvf v2.0.tar.gz
 ```
 
-5. Install nnUNet-1.7.1 with the NexToU related function and run it:
+4. Copy the NexToU loss functions, network architecture, and network training code files to the corresponding directories in nnUNet-2.0 using the following commands:
 ```
-cd nnUNet-1.7.1 && pip install -e .
+cp NexToU/loss/* nnUNet-2.0/nnunetv2/training/loss/
+cp NexToU/network_architecture/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/variants/network_architecture/
+cp NexToU/nnUNetTrainer/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/
 ```
+
+5. Install nnUNet-2.0 with the NexToU related function and run it:
+```
+cd nnUNet-2.0 && pip install -e .
+```
+
+If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. The channel count should be a multiple of 3. You can add the following JSON snippet to your existing `nnUNetPlans.json`:
+
+```json
+"3d_fullres_nextou": {
+"inherits_from": "3d_fullres",
+"UNet_base_num_features": 24,
+"unet_max_num_features": 312
+}
 
 For BTCV dataset:
 ```
-nnUNet_train 3d_fullres nnUNetTrainerV2_NexToU_BTI_Synapse Task111_Synapse_CT 0
+nnUNetv2_train 3d_fullres_nextou nnUNetTrainer_NexToU_BTI_Synapse Task111_Synapse_CT 0
 ```
 
 For RAVIR dataset:
 ```
-nnUNet_train 2d nnUNetTrainerV2_NexToU_BTI_RAVIR Task810_RAVIR_vessel_seg 0
+nnUNetv2_train 2d nnUNetTrainer_NexToU_BTI_RAVIR Task810_RAVIR_vessel_seg 0
 ```
 
 For ICA dataset:
 ```
-nnUNet_train 3d_fullres nnUNetTrainerV2_NexToU_BTI_ICA_noMirroring Task115_angio_MRA_multi_class 0
+nnUNetv2_train 3d_fullres_nextou nnUNetTrainer_NexToU_BTI_ICA_noMirroring Task115_angio_MRA_multi_class 0
 ```
 
 You can use the relevant components of NexToU in your own projects by importing them from the respective files. Please ensure that you abide by the license agreement while using the code.
