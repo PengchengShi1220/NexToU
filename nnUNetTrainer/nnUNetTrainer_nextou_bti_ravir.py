@@ -6,7 +6,14 @@ from nnunetv2.training.loss.dice import MemoryEfficientSoftDiceLoss
 from nnunetv2.training.nnUNetTrainer.nnUNetTrainer_nextou import nnUNetTrainer_NexToU
 
 class nnUNetTrainer_NexToU_BTI_RAVIR(nnUNetTrainer_NexToU):
-
+    def make_tensors(self, lists, device):
+        if not lists:
+            return lists
+        elif isinstance(lists[0], list):
+            return [self.make_tensors(sublist, device) for sublist in lists]
+        else:
+            return torch.tensor(lists).to(device)
+            
     def _build_loss(self):
 
         deep_supervision_scales = self._get_deep_supervision_scales()
@@ -19,14 +26,15 @@ class nnUNetTrainer_NexToU_BTI_RAVIR(nnUNetTrainer_NexToU):
         # we don't use the lowest 2 outputs. Normalize weights so that they sum to 1
         weights = weights / weights.sum()
 
+        patch_size = self.configuration_manager.patch_size
+        dim = len(patch_size)
+
         # ECCV 2022 Oral: Learning Topological Interactions for Multi-Class Medical Image Segmentation
         # λti = 1e-4 in the 2D setting, and λti = 1e-6 in the 3D settings.
-        if self.threeD:
-            dim = 3
+        if dim == 3:
             connectivity = 26
             lambda_ti = 1e-6
         else:
-            dim = 2
             connectivity = 8
             lambda_ti = 1e-4
 
@@ -34,8 +42,8 @@ class nnUNetTrainer_NexToU_BTI_RAVIR(nnUNetTrainer_NexToU):
         inclusion_list = []
         exclusion_list = [[1, 2]]
         
-        inclusion_list = torch.tensor(inclusion_list).to(self.device)
-        exclusion_list = torch.tensor(exclusion_list).to(self.device)
+        inclusion_list = self.make_tensors(inclusion_list, self.device)
+        exclusion_list = self.make_tensors(exclusion_list, self.device)
 
         loss = DC_and_CE_and_BTI_Loss({'batch_dice': self.configuration_manager.batch_dice, 'smooth': 1e-5, 'do_bg': False, 'ddp': self.is_ddp}, {},
                                     {'dim': dim, 'connectivity': connectivity, 'inclusion': inclusion_list, 'exclusion': exclusion_list, 'min_thick': 1},
