@@ -55,9 +55,9 @@ tar -zxvf v2.0.tar.gz
 
 4. Copy the NexToU loss functions, network architecture, and network training code files to the corresponding directories in nnUNet-2.0 using the following commands:
 ```
-cp NexToU/loss/* nnUNet-2.0/nnunetv2/training/loss/
-cp NexToU/network_architecture/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/variants/network_architecture/
-cp NexToU/nnUNetTrainer/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/
+cp NexToU-NexToU_nnunetv2/loss/* nnUNet-2.0/nnunetv2/training/loss/
+cp NexToU-NexToU_nnunetv2/network_architecture/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/variants/network_architecture/
+cp NexToU-NexToU_nnunetv2/nnUNetTrainer/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/
 ```
 
 5. Install nnUNet-2.0 with the NexToU related function and run it:
