@@ -77,17 +77,17 @@ If you're using the `3d_fullres_nextou` configuration, make sure to update your 
 
 For BTCV dataset:
 ```
-nnUNetv2_train 3d_fullres_nextou nnUNetTrainer_NexToU_BTI_Synapse Task111_Synapse_CT 0
+nnUNetv2_train 111 3d_fullres_nextou 0 -tr nnUNetTrainer_NexToU_BTI_Synapse
 ```
 
 For RAVIR dataset:
 ```
-nnUNetv2_train 2d nnUNetTrainer_NexToU_BTI_RAVIR Task810_RAVIR_vessel_seg 0
+nnUNetv2_train 810 2d 0 -tr nnUNetTrainer_NexToU_BTI_RAVIR
 ```
 
 For ICA dataset:
 ```
-nnUNetv2_train 3d_fullres_nextou nnUNetTrainer_NexToU_BTI_ICA_noMirroring Task115_angio_MRA_multi_class 0
+nnUNetv2_train 115 3d_fullres_nextou 0 -tr nnUNetTrainer_NexToU_BTI_ICA_noMirroring
 ```
 
 You can use the relevant components of NexToU in your own projects by importing them from the respective files. Please ensure that you abide by the license agreement while using the code.
