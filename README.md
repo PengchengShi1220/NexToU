@@ -2,9 +2,9 @@
 [![Paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2305.15911)
 
 ## :bulb: News
-* **(September 19, 2023):** Launched NexToU architecture and training codes for nnU-Net V2.
+* **(September 19, 2023):** Launched NexToU architecture and training codes for [nnU-Net V2](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv2).
 * **(June 14, 2023):** Updated NexToU installation and running demo.
-* **(May 26, 2023):** Released NexToU architecture and training codes for nnU-Net V1.
+* **(May 26, 2023):** Released NexToU architecture and training codes for [nnU-Net V1](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv1).
 
 <p align="center">
   <img src="assets/NexToU.png" alt="NexToU" width="180"/>
