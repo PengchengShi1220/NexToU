@@ -68,7 +68,7 @@ def dense_knn_matrix(x, k=16, relative_pos=None):
         batch_size, n_points, n_dims = x.shape
         ### memory efficient implementation ###
         n_part = 10000
-        if torch.gt(torch.tensor(n_points), torch.tensor(n_part)):
+        if n_points > n_part:
             nn_idx_list = []
             groups = math.ceil(n_points / n_part)
             for i in range(groups):
@@ -125,7 +125,7 @@ class DenseDilated(nn.Module):
 
     def forward(self, edge_index):
         if self.stochastic:
-            if torch.lt(torch.rand(1), self.epsilon) and self.training:
+            if torch.rand(1) < self.epsilon and self.training:
                 num = self.k * self.dilation
                 randnum = torch.randperm(num)[:self.k]
                 edge_index = edge_index[:, :, :, randnum]
