@@ -651,7 +651,7 @@ def window_reverse(windows, window_size, size_tuple):
     """
     if len(windows.shape) == 4:
         H, W = size_tuple
-        B = torch.floor(torch.tensor(windows.shape[0] / (H * W / window_size[0] / window_size[1])))
+        B = int(windows.shape[0] / (H * W / window_size[0] / window_size[1]))
         windows = windows.permute(0, 2, 3, 1)
         x = rearrange(windows, '(b h w) p1 p2 c -> b (h p1) (w p2) c',
                     p1=window_size[0], p2=window_size[1], b=B, h=H//window_size[0], w=W//window_size[1])
@@ -659,10 +659,10 @@ def window_reverse(windows, window_size, size_tuple):
 
     elif len(windows.shape) == 5:
         S, H, W = size_tuple
-        B = torch.floor(torch.tensor(windows.shape[0] / (S * H * W / window_size[0] / window_size[1] / window_size[2])))  
+        B = int(windows.shape[0] / (S * H * W / window_size[0] / window_size[1] / window_size[2])) 
         windows = windows.permute(0, 2, 3, 4, 1)
         x = rearrange(windows, '(b s h w) p1 p2 p3 c -> b (s p1) (h p2) (w p3) c',
-                    p1=window_size[0], p2=window_size[1], p3=window_size[2], b=int(B.clone().numpy()),
+                    p1=window_size[0], p2=window_size[1], p3=window_size[2], b=B,
                     s=S//window_size[0], h=H//window_size[1], w=W//window_size[2])
         x = x.permute(0, 4, 1, 2, 3)
     else:
@@ -723,7 +723,7 @@ class SwinGrapher(nn.Module):
     def _get_relative_pos(self, relative_pos, window_size_tuple):
         if self.conv_op == nn.Conv2d:
             H, W = window_size_tuple
-            if relative_pos is None or torch.all(torch.tensor(H * W).eq(self.n)):
+            if relative_pos is None or H * W == self.n:
                 return relative_pos
             else:
                 N = H * W
@@ -732,7 +732,7 @@ class SwinGrapher(nn.Module):
 
         elif self.conv_op == nn.Conv3d:
             S, H, W = window_size_tuple
-            if relative_pos is None or torch.all(torch.tensor(S * H * W).eq(self.n)):
+            if relative_pos is None or S * H * W == self.n:
                 return relative_pos
             else:
                 N = S * H * W
@@ -748,12 +748,12 @@ class SwinGrapher(nn.Module):
             B, C, H, W = x.shape
             size_tuple = (H, W)
             h, w = self.img_shape
-            assert torch.all(torch.tensor(H).eq(h)) and torch.all(torch.tensor(W).eq(w)), "input feature has wrong size"
+            assert H == h and W == w, "input feature has wrong size"
         elif self.conv_op == nn.Conv3d:
             B, C, S, H, W = x.shape
             size_tuple = (S, H, W)
             s, h, w = self.img_shape
-            assert torch.all(torch.tensor(S).eq(s)) and torch.all(torch.tensor(H).eq(h)) and torch.all(torch.tensor(W).eq(w)), "input feature has wrong size"
+            assert S == s and H == h and W == w, "input feature has wrong size"
         else:
             raise NotImplementedError('conv operation [%s] is not found' % self.conv_op)
 
@@ -862,7 +862,7 @@ class PoolGrapher(nn.Module):
     def _get_relative_pos(self, relative_pos, size_tuple):
         if self.conv_op == nn.Conv2d:
             H, W = size_tuple
-            if relative_pos is None or torch.all(torch.tensor(H * W).eq(self.n)):
+            if relative_pos is None or H * W == self.n:
                 return relative_pos
             else:
                 N = H * W
@@ -871,7 +871,7 @@ class PoolGrapher(nn.Module):
 
         elif self.conv_op == nn.Conv3d:
             S, H, W = size_tuple
-            if relative_pos is None or torch.all(torch.tensor(S * H * W).eq(self.n)):
+            if relative_pos is None or S * H * W == self.n:
                 return relative_pos
             else:
                 N = S * H * W
