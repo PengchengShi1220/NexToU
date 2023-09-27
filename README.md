@@ -70,6 +70,11 @@ If you're using the `3d_fullres_nextou` configuration, make sure to update your 
 ```json
 "3d_fullres_nextou": {
     "inherits_from": "3d_fullres",
+    "patch_size": [
+        64,
+        224,
+        192
+    ],
     "UNet_base_num_features": 24,
     "unet_max_num_features": 312
 }
