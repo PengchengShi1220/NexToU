@@ -85,9 +85,6 @@ class BTI_Loss(torch.nn.Module):
             label_A = interaction[1]
             label_C = interaction[2]
 
-            # label_A = to_cuda(torch.tensor(label_A))
-            # label_C = to_cuda(torch.tensor(label_C))
-
             # Get Masks
             # mask_A = torch.where(P == label_A, 1.0, 0.0).double() # TI module
             mask_A = torch.where(torch.isin(P, label_A), 1.0, 0.0).double() # BTI module
