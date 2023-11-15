@@ -971,12 +971,8 @@ class NexToU(SegmentationNetwork):
         self.conv_layer_d_num = conv_layer_d_num
         if self.conv_op == nn.Conv2d:
             H, W = img_shape_list[conv_layer_d_num-1]
-            channels_num = min(base_num_features*(2**(conv_layer_d_num-1)), self.max_num_features)
-            self.pos_embed = nn.Parameter(torch.zeros(1, channels_num, H, W)) #224//4, 224//4
         elif self.conv_op == nn.Conv3d:
             H, W, D = img_shape_list[conv_layer_d_num-1]
-            channels_num = min(base_num_features*(2**(conv_layer_d_num-1)), self.max_num_features)
-            self.pos_embed = nn.Parameter(torch.zeros(1, channels_num, H, W, D))
         else:
             raise NotImplementedError('conv operation [%s] is not found' % self.conv_op)
                 
@@ -1126,12 +1122,6 @@ class NexToU(SegmentationNetwork):
         skips = []
         seg_outputs = []
         for d in range(len(self.conv_blocks_context) - 1):
-            # pos_embed:
-            if d == self.conv_layer_d_num:
-                x = x + self.pos_embed.clone() # https://github.com/NVlabs/FUNIT/issues/23
-            else:
-                pass
-
             x = self.conv_blocks_context[d](x)
             skips.append(x)
             if not self.convolutional_pooling:
