@@ -35,7 +35,7 @@ NexToU consists of several main components. The following links will take you di
 
 - Network Architecture: The network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/network_architecture/NexToU.py) and [NexToU_Encoder_Decoder.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/network_architecture/NexToU_Encoder_Decoder.py).
 - Network Training: The file responsible for network training is [nnUNetTrainer_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_nextou.py).
-- Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [bti_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/loss/bti_loss.py).
+- Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [bti_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/loss/bti_loss.py). Specifically for the ICA dataset training, it is further adapted in [nnUNetTrainer_nextou_bti_ica_noMirroring.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_nextou_bti_ica_noMirroring.py).
 
 To incorporate the functionalities of NexToU with nnUNet, follow the steps given below:
 
