@@ -75,6 +75,9 @@ class NexToU_Encoder(nn.Module):
             h, w = patch_size[0], patch_size[1]
             img_shape_list.append((h, w))
             n_size_list.append(h * w)
+
+            channels_num = min(min(features_per_stage)*(2**(conv_layer_d_num-1)), max(features_per_stage))
+            self.pos_embed = nn.Parameter(torch.zeros(1, channels_num, h, w))
             
             for i in range(len(pool_op_kernel_sizes)):
                 h_k, w_k = pool_op_kernel_sizes[i]
@@ -87,7 +90,10 @@ class NexToU_Encoder(nn.Module):
             h, w, d = patch_size[0], patch_size[1], patch_size[2]
             img_shape_list.append((h, w, d))
             n_size_list.append(h * w * d)
-
+            
+            channels_num = min(min(features_per_stage)*(2**(conv_layer_d_num-1)), max(features_per_stage))
+            self.pos_embed = nn.Parameter(torch.zeros(1, channels_num, h, w, d))
+            
             for i in range(len(pool_op_kernel_sizes)):
                 h_k, w_k, d_k = pool_op_kernel_sizes[i]
                 h //= h_k
@@ -152,7 +158,13 @@ class NexToU_Encoder(nn.Module):
     def forward(self, x):
         ret = []
         # print("Encoder: ")
-        for s in self.stages:           
+        for s in self.stages:
+            # pos_embed:
+            if s == self.conv_layer_d_num:
+                x = x + self.pos_embed.clone() # https://github.com/NVlabs/FUNIT/issues/23
+            else:
+                pass
+                
             x = s(x)
             ret.append(x)
         if self.return_skips:
