@@ -4,7 +4,7 @@ import numpy as np
 from batchgenerators.utilities.file_and_folder_operations import *
 from nnunet.utilities.task_name_id_conversion import convert_id_to_task_name
 
-# python change_split_file.py Task111_Synapse_CT
+# python change_split_file_111_split_18_12.py Task111_Synapse_CT
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("task", help="can be task name or task id")
