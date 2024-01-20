@@ -66,6 +66,8 @@ cd nnUNet-1.7.1 && pip install -e .
 
 For BTCV dataset:
 ```
+python change_batch_size_patch_size.py 3d_fullres Task111_Synapse_CT -bs 2 -ps 48 192 192
+python change_split_file_111_split_18_12.py Task111_Synapse_CT
 nnUNet_train 3d_fullres nnUNetTrainerV2_NexToU_BTI_Synapse Task111_Synapse_CT 0
 ```
 
