@@ -431,7 +431,7 @@
                 192
             ],
             "UNet_base_num_features": 24,
-            "unet_max_num_features": 312
+            "unet_max_num_features": 324
 	},
         "3d_cascade_fullres": {
             "inherits_from": "3d_fullres",
