@@ -66,14 +66,14 @@ cp NexToU-NexToU_nnunetv2/nnUNetTrainer/* nnUNet-2.0/nnunetv2/training/nnUNetTra
 cd nnUNet-2.0 && pip install -e .
 ```
 
-If employing the NexToU architecture, it's necessary to specify 'n_conv_stages' and 'n_swin_gnn_stages' in the configurations for both 2D and 3D full resolution. For a 2d configuration, add:
+If employing the NexToU architecture, it's necessary to specify `n_conv_stages` and `n_swin_gnn_stages` in the configurations for both `2d` and `3d_fullres` resolution. For a `2d` configuration, add:
 ```json
 "2d": {
     "n_conv_stages": 3,
     "n_swin_gnn_stages": 0,
 }
 ```
-Similarly, for 3d_fullres configuration, include:
+Similarly, for `3d_fullres` configuration, include:
 
 ```json
 "3d_fullres": {
