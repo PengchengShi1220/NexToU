@@ -105,7 +105,7 @@ class NexToU_Encoder(nn.Module):
         self.opt.img_min_shape = img_min_shape
         self.n_swin_gnn_stages = 0 #n_swin_gnn_stages
         self.no_pool_gnn_stage_num = n_stages - 4
-        self.n_conv_stages = self.no_pool_gnn_stage_num - self.n_swin_gnn_stages)
+        self.n_conv_stages = self.no_pool_gnn_stage_num - self.n_swin_gnn_stages
         self.opt.n_size_list = n_size_list
 
         stages = []
@@ -121,7 +121,7 @@ class NexToU_Encoder(nn.Module):
             else:
                 raise RuntimeError()
             
-            if s < n_conv_stages:
+            if s < self.n_conv_stages:
                 stage_modules.append(StackedConvBlocks(n_conv_per_stage[s], conv_op, input_channels, features_per_stage[s], kernel_sizes[s], conv_stride,
                         conv_bias, norm_op, norm_op_kwargs, dropout_op, dropout_op_kwargs, nonlin, nonlin_kwargs, nonlin_first))
 
@@ -257,8 +257,9 @@ class NexToU_Decoder(nn.Module):
         self.opt = opt
         self.opt.img_min_shape = img_min_shape
         self.n_swin_gnn_stages = 0 #n_swin_gnn_stages
-        self.no_pool_gnn_stage_num = n_stages - 4
-        self.n_conv_stages = self.no_pool_gnn_stage_num - self.n_swin_gnn_stages)
+        self.no_pool_gnn_stage_num = n_stages_encoder - 4
+        self.n_conv_stages = self.no_pool_gnn_stage_num - self.n_swin_gnn_stages
+        self.opt.n_size_list = n_size_list
 
         # we start with the bottleneck and work out way up
         stages = []
@@ -1174,3 +1175,4 @@ class PoolGNN_blocks(nn.Module):
     def forward(self, x): 
         x = self.blocks(x)
         return x
+    
