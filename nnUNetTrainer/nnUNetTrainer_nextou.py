@@ -74,8 +74,6 @@ class nnUNetTrainer_NexToU(nnUNetTrainer):
         model = network_class(
             input_channels=num_input_channels,
             patch_size=configuration_manager.patch_size,
-            n_conv_stages=configuration_manager.n_conv_stages,
-            n_swin_gnn_stages=configuration_manager.n_swin_gnn_stages,
             n_stages=num_stages,
             features_per_stage=[min(configuration_manager.UNet_base_num_features * 2 ** i,
                                     configuration_manager.unet_max_num_features) for i in range(num_stages)],
