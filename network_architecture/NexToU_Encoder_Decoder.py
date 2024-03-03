@@ -16,7 +16,7 @@ from einops import rearrange
 
 class OptInit:
     def __init__(self, drop_path_rate=0., pool_op_kernel_sizes_len=4):
-        self.k = [4, 8, 16] + [32] * (pool_op_kernel_sizes_len - 3) 
+        self.pool_op_kernel_sizes_len = pool_op_kernel_sizes_len
         self.conv = 'mr'  
         self.act = 'leakyrelu'
         self.norm = 'instance'
@@ -27,14 +27,16 @@ class OptInit:
         self.use_stochastic = True 
         self.drop_path = drop_path_rate
         # number of basic blocks in the backbone
-        self.blocks = [1] * (pool_op_kernel_sizes_len - 2) + [1, 1] 
+        self.blocks = [1] * pool_op_kernel_sizes_len
         # number of reduce ratios in the backbone
-        self.reduce_ratios = [4, 2, 1, 1] + [1] * (pool_op_kernel_sizes_len - 4) 
+        self.reduce_ratios = [16, 8, 4, 2] + [1] * (pool_op_kernel_sizes_len - 4)
 
 class NexToU_Encoder(nn.Module):
     def __init__(self,
                  input_channels: int,
                  patch_size: List[int],
+                 n_conv_stages: int,
+                 n_swin_gnn_stages: int,
                  n_stages: int,
                  features_per_stage: Union[int, List[int], Tuple[int, ...]],
                  conv_op: Type[_ConvNd],
@@ -69,13 +71,12 @@ class NexToU_Encoder(nn.Module):
                                              "Important: first entry is recommended to be 1, else we run strided conv drectly on the input"
         img_shape_list = []
         n_size_list = []
-        conv_layer_d_num = 2
         pool_op_kernel_sizes = strides[1:]
         if conv_op == nn.Conv2d:
             h, w = patch_size[0], patch_size[1]
             img_shape_list.append((h, w))
             n_size_list.append(h * w)
-            
+
             for i in range(len(pool_op_kernel_sizes)):
                 h_k, w_k = pool_op_kernel_sizes[i]
                 h //= h_k
@@ -87,7 +88,7 @@ class NexToU_Encoder(nn.Module):
             h, w, d = patch_size[0], patch_size[1], patch_size[2]
             img_shape_list.append((h, w, d))
             n_size_list.append(h * w * d)
-            
+
             for i in range(len(pool_op_kernel_sizes)):
                 h_k, w_k, d_k = pool_op_kernel_sizes[i]
                 h //= h_k
@@ -95,16 +96,19 @@ class NexToU_Encoder(nn.Module):
                 d //= d_k
                 img_shape_list.append((h, w, d))
                 n_size_list.append(h * w * d)
+
         else:
             raise ValueError("unknown convolution dimensionality, conv op: %s" % str(conv_op))
-
+            
         img_min_shape = img_shape_list[-1]
 
         opt = OptInit(pool_op_kernel_sizes_len=len(strides))
         self.opt = opt
         self.opt.img_min_shape = img_min_shape
-        self.conv_layer_d_num = conv_layer_d_num
+        self.n_conv_stages = n_conv_stages
+        self.n_swin_gnn_stages = n_swin_gnn_stages
         self.opt.n_size_list = n_size_list
+        self.no_pool_gnn_stage_num = n_conv_stages + n_swin_gnn_stages
 
         stages = []
         for s in range(n_stages):
@@ -119,15 +123,23 @@ class NexToU_Encoder(nn.Module):
             else:
                 raise RuntimeError()
             
-            if s < conv_layer_d_num:
-                stage_modules.append(StackedConvBlocks(
-                    n_conv_per_stage[s], conv_op, input_channels, features_per_stage[s], kernel_sizes[s], conv_stride,
-                    conv_bias, norm_op, norm_op_kwargs, dropout_op, dropout_op_kwargs, nonlin, nonlin_kwargs, nonlin_first))
+            if s < n_conv_stages:
+                stage_modules.append(StackedConvBlocks(n_conv_per_stage[s], conv_op, input_channels, features_per_stage[s], kernel_sizes[s], conv_stride,
+                        conv_bias, norm_op, norm_op_kwargs, dropout_op, dropout_op_kwargs, nonlin, nonlin_kwargs, nonlin_first))
+
+            elif s < self.no_pool_gnn_stage_num:
+                stage_modules.append(nn.Sequential(
+                    StackedConvBlocks(n_conv_per_stage[s] - 1, conv_op, input_channels, features_per_stage[s], kernel_sizes[s], conv_stride,
+                        conv_bias, norm_op, norm_op_kwargs, dropout_op, dropout_op_kwargs, nonlin, nonlin_kwargs, nonlin_first),
+                    Swin_GNN_blocks(features_per_stage[s], img_shape_list[s], s-self.n_conv_stages, opt=self.opt, conv_op=conv_op,
+                                    norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op)))
             else:
                 stage_modules.append(nn.Sequential(
                     StackedConvBlocks(n_conv_per_stage[s] - 1, conv_op, input_channels, features_per_stage[s], kernel_sizes[s], conv_stride,
                         conv_bias, norm_op, norm_op_kwargs, dropout_op, dropout_op_kwargs, nonlin, nonlin_kwargs, nonlin_first),
-                    Efficient_ViG_blocks(features_per_stage[s], img_shape_list[s], s-conv_layer_d_num, conv_layer_d_num, opt=self.opt, conv_op=conv_op,
+                    PoolGNN_blocks(features_per_stage[s], img_shape_list[s], s-self.no_pool_gnn_stage_num, self.no_pool_gnn_stage_num, opt=self.opt, conv_op=conv_op,
+                                    norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op),
+                    Swin_GNN_blocks(features_per_stage[s], img_shape_list[s], s-self.n_conv_stages, opt=self.opt, conv_op=conv_op,
                                     norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op)))
                 
             stages.append(nn.Sequential(*stage_modules))
@@ -154,7 +166,7 @@ class NexToU_Encoder(nn.Module):
         # print("Encoder: ")
         for s_i in range(0, len(self.stages)):
             s = self.stages[s_i]
-                
+
             x = s(x)
             ret.append(x)
         if self.return_skips:
@@ -178,6 +190,8 @@ class NexToU_Decoder(nn.Module):
     def __init__(self,
                  encoder: NexToU_Encoder,
                  patch_size: List[int],
+                 n_conv_stages: int,
+                 n_swin_gnn_stages: int,
                  strides: Union[int, List[int], Tuple[int, ...]],
                  num_classes: int,
                  n_conv_per_stage: Union[int, Tuple[int, ...], List[int]],
@@ -212,7 +226,6 @@ class NexToU_Decoder(nn.Module):
 
         img_shape_list = []
         n_size_list = []
-        conv_layer_d_num = 2
         pool_op_kernel_sizes = strides[1:]
         if encoder.conv_op == nn.Conv2d:
             h, w = patch_size[0], patch_size[1]
@@ -247,8 +260,10 @@ class NexToU_Decoder(nn.Module):
         opt = OptInit(pool_op_kernel_sizes_len=len(strides))
         self.opt = opt
         self.opt.img_min_shape = img_min_shape
-        self.conv_layer_d_num = conv_layer_d_num
+        self.n_conv_stages = n_conv_stages
+        self.n_swin_gnn_stages = n_swin_gnn_stages
         self.opt.n_size_list = n_size_list
+        self.no_pool_gnn_stage_num = n_conv_stages + n_swin_gnn_stages
 
         # we start with the bottleneck and work out way up
         stages = []
@@ -265,20 +280,29 @@ class NexToU_Decoder(nn.Module):
             ))
 
             # input features to conv is 2x input_features_skip (concat input_features_skip with transpconv output)
-            if s < (n_stages_encoder-conv_layer_d_num):
+            if s < (n_stages_encoder-self.no_pool_gnn_stage_num):
                 stages.append(nn.Sequential(
                     StackedConvBlocks(n_conv_per_stage[s-1] - 1, encoder.conv_op, 2 * input_features_skip, input_features_skip,
                                     encoder.kernel_sizes[-(s + 1)], 1, encoder.conv_bias, encoder.norm_op, encoder.norm_op_kwargs,
                                     encoder.dropout_op, encoder.dropout_op_kwargs, encoder.nonlin, encoder.nonlin_kwargs, nonlin_first),
-                    Efficient_ViG_blocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-conv_layer_d_num-(s + 1), conv_layer_d_num, opt=self.opt, conv_op=encoder.conv_op,
+                    PoolGNN_blocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.no_pool_gnn_stage_num-(s + 1), self.no_pool_gnn_stage_num, opt=self.opt, conv_op=encoder.conv_op,
+                                    norm_op=encoder.norm_op, norm_op_kwargs=encoder.norm_op_kwargs, dropout_op=encoder.dropout_op),
+                    Swin_GNN_blocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.n_conv_stages-(s + 1), opt=self.opt, conv_op=encoder.conv_op,
                                     norm_op=encoder.norm_op, norm_op_kwargs=encoder.norm_op_kwargs, dropout_op=encoder.dropout_op)))
 
+            elif s < (n_stages_encoder-self.n_conv_stages):
+                stages.append(nn.Sequential(
+                    StackedConvBlocks(n_conv_per_stage[s-1] - 1, encoder.conv_op, 2 * input_features_skip, input_features_skip,
+                                    encoder.kernel_sizes[-(s + 1)], 1, encoder.conv_bias, encoder.norm_op, encoder.norm_op_kwargs,
+                                    encoder.dropout_op, encoder.dropout_op_kwargs, encoder.nonlin, encoder.nonlin_kwargs, nonlin_first),
+                    Swin_GNN_blocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.n_conv_stages-(s + 1), opt=self.opt, conv_op=encoder.conv_op,
+                                    norm_op=encoder.norm_op, norm_op_kwargs=encoder.norm_op_kwargs, dropout_op=encoder.dropout_op)))
             else:
-                stages.append(StackedConvBlocks(
-                n_conv_per_stage[s-1], encoder.conv_op, 2 * input_features_skip, input_features_skip,
-                encoder.kernel_sizes[-(s + 1)], 1, encoder.conv_bias, encoder.norm_op, encoder.norm_op_kwargs,
-                encoder.dropout_op, encoder.dropout_op_kwargs, encoder.nonlin, encoder.nonlin_kwargs, nonlin_first))
-                
+                stages.append(
+                    StackedConvBlocks(n_conv_per_stage[s-1], encoder.conv_op, 2 * input_features_skip, input_features_skip,
+                                    encoder.kernel_sizes[-(s + 1)], 1, encoder.conv_bias, encoder.norm_op, encoder.norm_op_kwargs,
+                                    encoder.dropout_op, encoder.dropout_op_kwargs, encoder.nonlin, encoder.nonlin_kwargs, nonlin_first))
+            
             # we always build the deep supervision outputs so that we can always load parameters. If we don't do this
             # then a model trained with deep_supervision=True could not easily be loaded at inference time where
             # deep supervision is not needed. It's just a convenience thing
@@ -501,7 +525,7 @@ class PoolDyGraphConv(GraphConv):
         else:
             raise NotImplementedError('conv operation [%s] is not found' % self.conv_op)
 
-        x, indices = self.max_pool_input(x)   
+        x, indices = self.max_pool_input(x) 
         y = None
         if self.r > 1:
             y = self.avg_pool(x, self.r, self.r)
@@ -661,7 +685,7 @@ def window_reverse(windows, window_size, size_tuple):
 
     elif len(windows.shape) == 5:
         S, H, W = size_tuple
-        B = int(windows.shape[0] / (S * H * W / window_size[0] / window_size[1] / window_size[2])) 
+        B = int(windows.shape[0] / (S * H * W / window_size[0] / window_size[1] / window_size[2]))
         windows = windows.permute(0, 2, 3, 4, 1)
         x = rearrange(windows, '(b s h w) p1 p2 p3 c -> b (s p1) (h p2) (w p3) c',
                     p1=window_size[0], p2=window_size[1], p3=window_size[2], b=B,
@@ -750,12 +774,12 @@ class SwinGrapher(nn.Module):
             B, C, H, W = x.shape
             size_tuple = (H, W)
             h, w = self.img_shape
-            assert H == h and W == w, "input feature has wrong size"
+            assert h == H and w == W, "input features has wrong size"
         elif self.conv_op == nn.Conv3d:
             B, C, S, H, W = x.shape
             size_tuple = (S, H, W)
             s, h, w = self.img_shape
-            assert S == s and H == h and W == w, "input feature has wrong size"
+            assert s == S and h == H and w == W, "input features has wrong size"
         else:
             raise NotImplementedError('conv operation [%s] is not found' % self.conv_op)
 
@@ -915,12 +939,95 @@ class PoolGrapher(nn.Module):
         return x
 
 class Efficient_ViG_blocks(nn.Module):
-    def __init__(self, channels, img_shape, index, conv_layer_d_num, opt=None, conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None,
+    def __init__(self, channels, img_shape, index, n_conv_stages, opt=None, conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None,
                     dropout_op=nn.Dropout3d, **kwargs):
         super(Efficient_ViG_blocks, self).__init__()
 
         blocks = []
-        k = opt.k
+        pool_op_kernel_sizes_len = opt.pool_op_kernel_sizes_len
+        conv = opt.conv
+        act = opt.act
+        norm = opt.norm
+        bias = opt.bias
+        epsilon = opt.epsilon
+        stochastic = opt.use_stochastic
+        drop_path = opt.drop_path
+        reduce_ratios = opt.reduce_ratios 
+        blocks_num_list = opt.blocks
+        n_size_list = opt.n_size_list
+        img_min_shape = opt.img_min_shape
+        n_conv_stages = opt.n_conv_stages
+
+        self.n_blocks = sum(blocks_num_list)        
+        # stochastic depth decay rule
+        dpr = [x.item() for x in torch.linspace(0, drop_path, self.n_blocks)]
+        sum_blocks = sum(blocks_num_list[n_conv_stages-n_conv_stages:index])
+        idx_list = [(k+sum_blocks) for k in range(0, blocks_num_list[index])]
+         
+        if conv_op == nn.Conv2d:
+            H_min, W_min = img_min_shape
+            max_num = int(H_min * W_min // 2)
+            k_candidate_list = [1, 2, 4, 8, 16, 32, 64]
+            max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            if pool_op_kernel_sizes_len >= 5:
+                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)] + [min(32, max_k)] * (pool_op_kernel_sizes_len - 5)
+            else:
+                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)][0:pool_op_kernel_sizes_len]
+
+            max_dilation = (H_min * W_min) // max(k)
+            window_size = img_min_shape
+            window_size_n = window_size[0] * window_size[1]   
+        elif conv_op == nn.Conv3d:
+            H_min, W_min, D_min = img_min_shape
+            max_num = int(H_min * W_min * D_min // 3)
+            k_candidate_list = [1, 2, 4, 8, 16, 32, 64]
+            max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            if pool_op_kernel_sizes_len >= 5:
+                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)] + [min(32, max_k)] * (pool_op_kernel_sizes_len - 5)
+            else:
+                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)][0:pool_op_kernel_sizes_len]
+
+            max_dilation = (H_min * W_min * D_min) // max(k)  
+            window_size = img_min_shape
+            window_size_n = window_size[0] * window_size[1] * window_size[2]      
+        else:
+            raise NotImplementedError('conv operation [%s] is not found' % conv_op)
+
+        i = n_conv_stages-n_conv_stages + index
+        for j in range(blocks_num_list[index]):
+            idx = idx_list[j]
+            if conv_op == nn.Conv2d:
+                shift_size = [window_size[0] // 2, window_size[1] // 2]
+            elif conv_op == nn.Conv3d:
+                shift_size = [window_size[0] // 2, window_size[1] // 2, window_size[2] // 2]
+            else:
+                raise NotImplementedError('conv operation [%s] is not found' % conv_op)
+
+            blocks.append(nn.Sequential(
+                    PoolGrapher(channels, img_shape, k[i], min(idx // 4 + 1, max_dilation), conv, act, norm,
+                    bias, stochastic, epsilon, reduce_ratios[i], n=n_size_list[i+n_conv_stages], drop_path=dpr[idx],
+                    relative_pos=True, conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op, img_min_shape=img_min_shape), 
+                    FFN(channels, channels * 4, act=act, drop_path=dpr[idx], conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs),
+                    SwinGrapher(channels, img_shape, k[i], min(idx // 4 + 1, max_dilation), conv, act, norm,
+                    bias, stochastic, epsilon, 1, n=window_size_n, drop_path=dpr[idx],
+                    relative_pos=True, conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op, 
+                    window_size=window_size, shift_size=shift_size), 
+                    FFN(channels, channels * 4, act=act, drop_path=dpr[idx], conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs)))
+
+        blocks = nn.Sequential(*blocks)
+        self.blocks = blocks
+
+    def forward(self, x): 
+        x = self.blocks(x)
+        return x
+
+class Swin_GNN_blocks(nn.Module):
+    def __init__(self, channels, img_shape, index, opt=None, conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None,
+                    dropout_op=nn.Dropout3d, **kwargs):
+        super(Swin_GNN_blocks, self).__init__()
+
+        blocks = []
+        pool_op_kernel_sizes_len = opt.pool_op_kernel_sizes_len
         conv = opt.conv
         act = opt.act
         norm = opt.norm
@@ -936,23 +1043,41 @@ class Efficient_ViG_blocks(nn.Module):
         self.n_blocks = sum(blocks_num_list)        
         # stochastic depth decay rule
         dpr = [x.item() for x in torch.linspace(0, drop_path, self.n_blocks)]
-        sum_blocks = sum(blocks_num_list[conv_layer_d_num-2:index])
+        sum_blocks = sum(blocks_num_list[0:index])
         idx_list = [(k+sum_blocks) for k in range(0, blocks_num_list[index])]
          
         if conv_op == nn.Conv2d:
             H_min, W_min = img_min_shape
-            max_dilation = (H_min * W_min) // max(k)
+            max_num = int(H_min * W_min // 2)
+            k_candidate_list = [2, 4, 8, 16, 32]
+            max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            min_k = max_num // (2 * 2)
+            if pool_op_kernel_sizes_len >= 5:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)] + [min(min_k*16, max_k)] * (pool_op_kernel_sizes_len - 5)
+            else:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)][0:pool_op_kernel_sizes_len]
+
+            max_dilation = (H_min * W_min) // max(k_list)
             window_size = img_min_shape
             window_size_n = window_size[0] * window_size[1]   
         elif conv_op == nn.Conv3d:
             H_min, W_min, D_min = img_min_shape
-            max_dilation = (H_min * W_min * D_min) // max(k)  
+            max_num = int(H_min * W_min * D_min // 3)
+            k_candidate_list = [2, 4, 8, 16, 32]
+            max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            min_k = max_num // (2 * 2 * 2)
+            if pool_op_kernel_sizes_len >= 5:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)] + [min(min_k*16, max_k)] * (pool_op_kernel_sizes_len - 5)
+            else:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)][0:pool_op_kernel_sizes_len]
+
+            max_dilation = (H_min * W_min * D_min) // max(k_list)  
             window_size = img_min_shape
             window_size_n = window_size[0] * window_size[1] * window_size[2]      
         else:
             raise NotImplementedError('conv operation [%s] is not found' % conv_op)
 
-        i = conv_layer_d_num-2 + index
+        i = index
         for j in range(blocks_num_list[index]):
             idx = idx_list[j]
             if conv_op == nn.Conv2d:
@@ -961,16 +1086,91 @@ class Efficient_ViG_blocks(nn.Module):
                 shift_size = [window_size[0] // 2, window_size[1] // 2, window_size[2] // 2]
             else:
                 raise NotImplementedError('conv operation [%s] is not found' % conv_op)
-
+            
             blocks.append(nn.Sequential(
-                    PoolGrapher(channels, img_shape, k[i], min(idx // 4 + 1, max_dilation), conv, act, norm,
-                    bias, stochastic, epsilon, reduce_ratios[i], n=n_size_list[i+2], drop_path=dpr[idx],
-                    relative_pos=True, conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op, img_min_shape=img_min_shape), 
-                    FFN(channels, channels * 4, act=act, drop_path=dpr[idx], conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs),
-                    SwinGrapher(channels, img_shape, k[i], min(idx // 4 + 1, max_dilation), conv, act, norm,
+                    SwinGrapher(channels, img_shape, k_list[i], min(idx // 4 + 1, max_dilation), conv, act, norm,
                     bias, stochastic, epsilon, 1, n=window_size_n, drop_path=dpr[idx],
                     relative_pos=True, conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op, 
                     window_size=window_size, shift_size=shift_size), 
+                    FFN(channels, channels * 4, act=act, drop_path=dpr[idx], conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs)))
+
+        blocks = nn.Sequential(*blocks)
+        self.blocks = blocks
+
+    def forward(self, x): 
+        x = self.blocks(x)
+        return x
+
+class PoolGNN_blocks(nn.Module):
+    def __init__(self, channels, img_shape, index, stage_num, opt=None, conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None,
+                    dropout_op=nn.Dropout3d, **kwargs):
+        super(PoolGNN_blocks, self).__init__()
+
+        blocks = []
+        pool_op_kernel_sizes_len = opt.pool_op_kernel_sizes_len
+        conv = opt.conv
+        act = opt.act
+        norm = opt.norm
+        bias = opt.bias
+        epsilon = opt.epsilon
+        stochastic = opt.use_stochastic
+        drop_path = opt.drop_path
+        reduce_ratios = opt.reduce_ratios 
+        blocks_num_list = opt.blocks
+        n_size_list = opt.n_size_list
+        img_min_shape = opt.img_min_shape
+
+        self.n_blocks = sum(blocks_num_list)        
+        # stochastic depth decay rule
+        dpr = [x.item() for x in torch.linspace(0, drop_path, self.n_blocks)]
+        sum_blocks = sum(blocks_num_list[0:index])
+        idx_list = [(k+sum_blocks) for k in range(0, blocks_num_list[index])]
+         
+        if conv_op == nn.Conv2d:
+            H_min, W_min = img_min_shape
+            max_num = int(H_min * W_min // 2)
+            k_candidate_list = [2, 4, 8, 16, 32]
+            max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            min_k = max_num // (2 * 2)
+            if pool_op_kernel_sizes_len >= 5:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)] + [min(min_k*16, max_k)] * (pool_op_kernel_sizes_len - 5)
+            else:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)][0:pool_op_kernel_sizes_len]
+
+            max_dilation = (H_min * W_min) // max(k_list)
+            window_size = img_min_shape
+            window_size_n = window_size[0] * window_size[1]   
+        elif conv_op == nn.Conv3d:
+            H_min, W_min, D_min = img_min_shape
+            max_num = int(H_min * W_min * D_min // 3)
+            k_candidate_list = [2, 4, 8, 16, 32]
+            max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            min_k = max_num // (2 * 2 * 2)
+            if pool_op_kernel_sizes_len >= 5:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)] + [min(min_k*16, max_k)] * (pool_op_kernel_sizes_len - 5)
+            else:
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)][0:pool_op_kernel_sizes_len]
+
+            max_dilation = (H_min * W_min * D_min) // max(k_list)  
+            window_size = img_min_shape
+            window_size_n = window_size[0] * window_size[1] * window_size[2]      
+        else:
+            raise NotImplementedError('conv operation [%s] is not found' % conv_op)
+
+        i = index
+        for j in range(blocks_num_list[index]):
+            idx = idx_list[j]
+            if conv_op == nn.Conv2d:
+                shift_size = [window_size[0] // 2, window_size[1] // 2]
+            elif conv_op == nn.Conv3d:
+                shift_size = [window_size[0] // 2, window_size[1] // 2, window_size[2] // 2]
+            else:
+                raise NotImplementedError('conv operation [%s] is not found' % conv_op)
+            
+            blocks.append(nn.Sequential(
+                    PoolGrapher(channels, img_shape, k_list[i+stage_num], min(idx // 4 + 1, max_dilation), conv, act, norm,
+                    bias, stochastic, epsilon, reduce_ratios[i+stage_num], n=n_size_list[i+stage_num], drop_path=dpr[idx],
+                    relative_pos=True, conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op, img_min_shape=img_min_shape), 
                     FFN(channels, channels * 4, act=act, drop_path=dpr[idx], conv_op=conv_op, norm_op=norm_op, norm_op_kwargs=norm_op_kwargs)))
 
         blocks = nn.Sequential(*blocks)
