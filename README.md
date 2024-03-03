@@ -76,8 +76,8 @@ If you're using the `3d_fullres_nextou` configuration, make sure to update your 
         224,
         192
     ],
-    "UNet_base_num_features": 24,
-    "unet_max_num_features": 384
+    "UNet_base_num_features": 33,
+    "unet_max_num_features": 324
 }
 ```
 
