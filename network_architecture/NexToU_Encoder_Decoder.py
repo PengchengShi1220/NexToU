@@ -35,8 +35,6 @@ class NexToU_Encoder(nn.Module):
     def __init__(self,
                  input_channels: int,
                  patch_size: List[int],
-                 n_conv_stages: int,
-                 n_swin_gnn_stages: int,
                  n_stages: int,
                  features_per_stage: Union[int, List[int], Tuple[int, ...]],
                  conv_op: Type[_ConvNd],
@@ -105,10 +103,10 @@ class NexToU_Encoder(nn.Module):
         opt = OptInit(pool_op_kernel_sizes_len=len(strides))
         self.opt = opt
         self.opt.img_min_shape = img_min_shape
-        self.n_conv_stages = n_conv_stages
-        self.n_swin_gnn_stages = n_swin_gnn_stages
+        self.n_swin_gnn_stages = 0 #n_swin_gnn_stages
+        self.no_pool_gnn_stage_num = n_stages - 4
+        self.n_conv_stages = self.no_pool_gnn_stage_num - self.n_swin_gnn_stages)
         self.opt.n_size_list = n_size_list
-        self.no_pool_gnn_stage_num = n_conv_stages + n_swin_gnn_stages
 
         stages = []
         for s in range(n_stages):
@@ -190,8 +188,6 @@ class NexToU_Decoder(nn.Module):
     def __init__(self,
                  encoder: NexToU_Encoder,
                  patch_size: List[int],
-                 n_conv_stages: int,
-                 n_swin_gnn_stages: int,
                  strides: Union[int, List[int], Tuple[int, ...]],
                  num_classes: int,
                  n_conv_per_stage: Union[int, Tuple[int, ...], List[int]],
@@ -260,10 +256,9 @@ class NexToU_Decoder(nn.Module):
         opt = OptInit(pool_op_kernel_sizes_len=len(strides))
         self.opt = opt
         self.opt.img_min_shape = img_min_shape
-        self.n_conv_stages = n_conv_stages
-        self.n_swin_gnn_stages = n_swin_gnn_stages
-        self.opt.n_size_list = n_size_list
-        self.no_pool_gnn_stage_num = n_conv_stages + n_swin_gnn_stages
+        self.n_swin_gnn_stages = 0 #n_swin_gnn_stages
+        self.no_pool_gnn_stage_num = n_stages - 4
+        self.n_conv_stages = self.no_pool_gnn_stage_num - self.n_swin_gnn_stages)
 
         # we start with the bottleneck and work out way up
         stages = []
