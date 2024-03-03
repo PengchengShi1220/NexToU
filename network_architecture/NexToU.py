@@ -12,6 +12,8 @@ class NexToU(nn.Module):
     def __init__(self,
                  input_channels: int,
                  patch_size: List[int],
+                 n_conv_stages: int,
+                 n_swin_gnn_stages: int,
                  n_stages: int,
                  features_per_stage: Union[int, List[int], Tuple[int, ...]],
                  conv_op: Type[_ConvNd],
@@ -45,11 +47,11 @@ class NexToU(nn.Module):
                                                                 f"as we have resolution stages. here: {n_stages} " \
                                                                 f"stages, so it should have {n_stages - 1} entries. " \
                                                                 f"n_conv_per_stage_decoder: {n_conv_per_stage_decoder}"
-        self.encoder = NexToU_Encoder(input_channels, patch_size, n_stages, features_per_stage, conv_op, kernel_sizes, strides,
+        self.encoder = NexToU_Encoder(input_channels, patch_size, n_conv_stages, n_swin_gnn_stages, n_stages, features_per_stage, conv_op, kernel_sizes, strides,
                                         n_conv_per_stage, conv_bias, norm_op, norm_op_kwargs, dropout_op,
                                         dropout_op_kwargs, nonlin, nonlin_kwargs, return_skips=True,
                                         nonlin_first=nonlin_first)
-        self.decoder = NexToU_Decoder(self.encoder, patch_size, strides, num_classes, n_conv_per_stage_decoder, deep_supervision,
+        self.decoder = NexToU_Decoder(self.encoder, patch_size, n_conv_stages, n_swin_gnn_stages, strides, num_classes, n_conv_per_stage_decoder, deep_supervision,
                                    nonlin_first=nonlin_first)
 
     def forward(self, x):
