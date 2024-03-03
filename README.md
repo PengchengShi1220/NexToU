@@ -66,7 +66,7 @@ cp NexToU-NexToU_nnunetv2/nnUNetTrainer/* nnUNet-2.0/nnunetv2/training/nnUNetTra
 cd nnUNet-2.0 && pip install -e .
 ```
 
-If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. The channel count should be a multiple of 3. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/0e9f558c97044917a2353d81133dd39e1b003c8d/nnUNetPlans.json#L426):
+If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. The channel count should be a multiple of 3. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/75a5729f4d274887849346148ed0620c3f2c1cba/nnUNetPlans.json#L433):
 
 ```json
 "3d_fullres_nextou": {
