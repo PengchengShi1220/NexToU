@@ -13,7 +13,6 @@ from nnunetv2.training.nnUNetTrainer.nnUNetTrainer import nnUNetTrainer
 from nnunetv2.utilities.plans_handling.plans_handler import ConfigurationManager, PlansManager
 from nnunetv2.utilities.get_network_from_plans import get_network_from_plans
 from nnunetv2.utilities.label_handling.label_handling import convert_labelmap_to_one_hot, determine_num_input_channels
-from nnunetv2.utilities.plans_handling.plans_handler import PlansManager, ConfigurationManager
 
 class nnUNetTrainer_NexToU(nnUNetTrainer):
     @staticmethod
@@ -70,10 +69,13 @@ class nnUNetTrainer_NexToU(nnUNetTrainer):
             if network_class != ResidualEncoderUNet else 'n_blocks_per_stage': configuration_manager.n_conv_per_stage_encoder,
             'n_conv_per_stage_decoder': configuration_manager.n_conv_per_stage_decoder
         }
+
         # network class name!!
         model = network_class(
             input_channels=num_input_channels,
             patch_size=configuration_manager.patch_size,
+            n_conv_stages=configuration_manager.n_conv_stages,
+            n_swin_gnn_stages=configuration_manager.n_swin_gnn_stages,
             n_stages=num_stages,
             features_per_stage=[min(configuration_manager.UNet_base_num_features * 2 ** i,
                                     configuration_manager.unet_max_num_features) for i in range(num_stages)],
@@ -89,5 +91,3 @@ class nnUNetTrainer_NexToU(nnUNetTrainer):
         if network_class == ResidualEncoderUNet:
             model.apply(init_last_bn_before_add_to_0)
         return model
-
- 
