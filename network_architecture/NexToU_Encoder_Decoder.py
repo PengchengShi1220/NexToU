@@ -963,29 +963,31 @@ class Efficient_ViG_blocks(nn.Module):
         if conv_op == nn.Conv2d:
             H_min, W_min = img_min_shape
             max_num = int(H_min * W_min // 2)
-            k_candidate_list = [1, 2, 4, 8, 16, 32, 64]
+            k_candidate_list = [2, 4, 8, 16, 32]
             max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            min_k = max_num // (2 * 2)
             if pool_op_kernel_sizes_len >= 5:
-                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)] + [min(32, max_k)] * (pool_op_kernel_sizes_len - 5)
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)] + [min(min_k*16, max_k)] * (pool_op_kernel_sizes_len - 5)
             else:
-                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)][0:pool_op_kernel_sizes_len]
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)][0:pool_op_kernel_sizes_len]
 
-            max_dilation = (H_min * W_min) // max(k)
+            max_dilation = (H_min * W_min) // max(k_list)
             window_size = img_min_shape
             window_size_n = window_size[0] * window_size[1]   
         elif conv_op == nn.Conv3d:
             H_min, W_min, D_min = img_min_shape
             max_num = int(H_min * W_min * D_min // 3)
-            k_candidate_list = [1, 2, 4, 8, 16, 32, 64]
+            k_candidate_list = [2, 4, 8, 16, 32]
             max_k = min(k_candidate_list, key=lambda x: abs(x - max_num))
+            min_k = max_num // (2 * 2 * 2)
             if pool_op_kernel_sizes_len >= 5:
-                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)] + [min(32, max_k)] * (pool_op_kernel_sizes_len - 5)
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)] + [min(min_k*16, max_k)] * (pool_op_kernel_sizes_len - 5)
             else:
-                k = [min(4, max_k), min(4, max_k), min(4, max_k), min(8, max_k), min(16, max_k)][0:pool_op_kernel_sizes_len]
+                k_list = [min(min_k, max_k), min(min_k*2, max_k), min(min_k*2, max_k), min(min_k*4, max_k), min(min_k*8, max_k)][0:pool_op_kernel_sizes_len]
 
-            max_dilation = (H_min * W_min * D_min) // max(k)  
+            max_dilation = (H_min * W_min * D_min) // max(k_list)  
             window_size = img_min_shape
-            window_size_n = window_size[0] * window_size[1] * window_size[2]      
+            window_size_n = window_size[0] * window_size[1] * window_size[2] 
         else:
             raise NotImplementedError('conv operation [%s] is not found' % conv_op)
 
@@ -1175,4 +1177,3 @@ class PoolGNN_blocks(nn.Module):
     def forward(self, x): 
         x = self.blocks(x)
         return x
-    
