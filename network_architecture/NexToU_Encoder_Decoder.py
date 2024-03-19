@@ -934,10 +934,10 @@ class PoolGrapher(nn.Module):
         x = self.drop_path(x) + _tmp
         return x
 
-class Efficient_ViG_blocks(nn.Module):
+class EfficientViGBlocks(nn.Module):
     def __init__(self, channels, img_shape, index, n_conv_stages, opt=None, conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None,
                     dropout_op=nn.Dropout3d, **kwargs):
-        super(Efficient_ViG_blocks, self).__init__()
+        super(EfficientViGBlocks, self).__init__()
 
         blocks = []
         pool_op_kernel_sizes_len = opt.pool_op_kernel_sizes_len
