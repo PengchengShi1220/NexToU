@@ -129,15 +129,15 @@ class NexToU_Encoder(nn.Module):
                 stage_modules.append(nn.Sequential(
                     StackedConvBlocks(n_conv_per_stage[s] - 1, conv_op, input_channels, features_per_stage[s], kernel_sizes[s], conv_stride,
                         conv_bias, norm_op, norm_op_kwargs, dropout_op, dropout_op_kwargs, nonlin, nonlin_kwargs, nonlin_first),
-                    Swin_GNN_blocks(features_per_stage[s], img_shape_list[s], s-self.n_conv_stages, opt=self.opt, conv_op=conv_op,
+                    SwinGNNBlocks(features_per_stage[s], img_shape_list[s], s-self.n_conv_stages, opt=self.opt, conv_op=conv_op,
                                     norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op)))
             else:
                 stage_modules.append(nn.Sequential(
                     StackedConvBlocks(n_conv_per_stage[s] - 1, conv_op, input_channels, features_per_stage[s], kernel_sizes[s], conv_stride,
                         conv_bias, norm_op, norm_op_kwargs, dropout_op, dropout_op_kwargs, nonlin, nonlin_kwargs, nonlin_first),
-                    PoolGNN_blocks(features_per_stage[s], img_shape_list[s], s-self.no_pool_gnn_stage_num, self.no_pool_gnn_stage_num, opt=self.opt, conv_op=conv_op,
+                    PoolGNNBlocks(features_per_stage[s], img_shape_list[s], s-self.no_pool_gnn_stage_num, self.no_pool_gnn_stage_num, opt=self.opt, conv_op=conv_op,
                                     norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op),
-                    Swin_GNN_blocks(features_per_stage[s], img_shape_list[s], s-self.n_conv_stages, opt=self.opt, conv_op=conv_op,
+                    SwinGNNBlocks(features_per_stage[s], img_shape_list[s], s-self.n_conv_stages, opt=self.opt, conv_op=conv_op,
                                     norm_op=norm_op, norm_op_kwargs=norm_op_kwargs, dropout_op=dropout_op)))
                 
             stages.append(nn.Sequential(*stage_modules))
@@ -281,9 +281,9 @@ class NexToU_Decoder(nn.Module):
                     StackedConvBlocks(n_conv_per_stage[s-1] - 1, encoder.conv_op, 2 * input_features_skip, input_features_skip,
                                     encoder.kernel_sizes[-(s + 1)], 1, encoder.conv_bias, encoder.norm_op, encoder.norm_op_kwargs,
                                     encoder.dropout_op, encoder.dropout_op_kwargs, encoder.nonlin, encoder.nonlin_kwargs, nonlin_first),
-                    PoolGNN_blocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.no_pool_gnn_stage_num-(s + 1), self.no_pool_gnn_stage_num, opt=self.opt, conv_op=encoder.conv_op,
+                    PoolGNNBlocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.no_pool_gnn_stage_num-(s + 1), self.no_pool_gnn_stage_num, opt=self.opt, conv_op=encoder.conv_op,
                                     norm_op=encoder.norm_op, norm_op_kwargs=encoder.norm_op_kwargs, dropout_op=encoder.dropout_op),
-                    Swin_GNN_blocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.n_conv_stages-(s + 1), opt=self.opt, conv_op=encoder.conv_op,
+                    SwinGNNBlocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.n_conv_stages-(s + 1), opt=self.opt, conv_op=encoder.conv_op,
                                     norm_op=encoder.norm_op, norm_op_kwargs=encoder.norm_op_kwargs, dropout_op=encoder.dropout_op)))
 
             elif s < (n_stages_encoder-self.n_conv_stages):
@@ -291,7 +291,7 @@ class NexToU_Decoder(nn.Module):
                     StackedConvBlocks(n_conv_per_stage[s-1] - 1, encoder.conv_op, 2 * input_features_skip, input_features_skip,
                                     encoder.kernel_sizes[-(s + 1)], 1, encoder.conv_bias, encoder.norm_op, encoder.norm_op_kwargs,
                                     encoder.dropout_op, encoder.dropout_op_kwargs, encoder.nonlin, encoder.nonlin_kwargs, nonlin_first),
-                    Swin_GNN_blocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.n_conv_stages-(s + 1), opt=self.opt, conv_op=encoder.conv_op,
+                    SwinGNNBlocks(input_features_skip, img_shape_list[n_stages_encoder-(s + 1)], n_stages_encoder-self.n_conv_stages-(s + 1), opt=self.opt, conv_op=encoder.conv_op,
                                     norm_op=encoder.norm_op, norm_op_kwargs=encoder.norm_op_kwargs, dropout_op=encoder.dropout_op)))
             else:
                 stages.append(
@@ -1019,10 +1019,10 @@ class Efficient_ViG_blocks(nn.Module):
         x = self.blocks(x)
         return x
 
-class Swin_GNN_blocks(nn.Module):
+class SwinGNNBlocks(nn.Module):
     def __init__(self, channels, img_shape, index, opt=None, conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None,
                     dropout_op=nn.Dropout3d, **kwargs):
-        super(Swin_GNN_blocks, self).__init__()
+        super(SwinGNNBlocks, self).__init__()
 
         blocks = []
         pool_op_kernel_sizes_len = opt.pool_op_kernel_sizes_len
@@ -1099,10 +1099,10 @@ class Swin_GNN_blocks(nn.Module):
         x = self.blocks(x)
         return x
 
-class PoolGNN_blocks(nn.Module):
+class PoolGNNBlocks(nn.Module):
     def __init__(self, channels, img_shape, index, stage_num, opt=None, conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None,
                     dropout_op=nn.Dropout3d, **kwargs):
-        super(PoolGNN_blocks, self).__init__()
+        super(PoolGNNBlocks, self).__init__()
 
         blocks = []
         pool_op_kernel_sizes_len = opt.pool_op_kernel_sizes_len
