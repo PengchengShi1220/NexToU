@@ -701,7 +701,6 @@ class SwinGrapher(nn.Module):
                  conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None, dropout_op=nn.Dropout3d, window_size=[3, 6, 6], shift_size=[0, 0, 0]):
         super(SwinGrapher, self).__init__()
         self.channels = in_channels
-        # self.n = n
         self.r = r
         self.conv_op = conv_op
         self.img_shape = img_shape
@@ -827,7 +826,6 @@ class PoolGrapher(nn.Module):
                  conv_op=nn.Conv3d, norm_op=nn.BatchNorm3d, norm_op_kwargs=None, dropout_op=nn.Dropout3d, img_min_shape=None):
         super(PoolGrapher, self).__init__()
         self.channels = in_channels
-        # self.n = n
         self.r = r
         self.conv_op = conv_op
         self.img_shape = img_shape
