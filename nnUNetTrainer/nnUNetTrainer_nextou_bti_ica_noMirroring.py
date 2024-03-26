@@ -3,9 +3,9 @@ import torch
 from nnunetv2.training.loss.deep_supervision import DeepSupervisionWrapper
 from nnunetv2.training.loss.compound_bti_loss import DC_and_CE_and_BTI_Loss
 from nnunetv2.training.loss.dice import MemoryEfficientSoftDiceLoss
-from nnunetv2.training.nnUNetTrainer.nnUNetTrainer_nextou_noMirroring import nnUNetTrainer_NexToU_noMirroring
+from nnunetv2.training.nnUNetTrainer.nnUNetTrainer_nextou_noMirroring import nnUNetTrainer_NexToU_NoMirroring
 
-class nnUNetTrainer_NexToU_BTI_ICA_noMirroring(nnUNetTrainer_NexToU_noMirroring):
+class nnUNetTrainer_NexToU_BTI_ICA_NoMirroring(nnUNetTrainer_NexToU_NoMirroring):
     def make_tensors(self, lists, device):
         if not lists:
             return lists
