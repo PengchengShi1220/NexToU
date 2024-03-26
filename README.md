@@ -1,5 +1,4 @@
 # NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation
-[![Paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2305.15911)
 
 ## :bulb: News
 * **(Mar 26, 2024):** [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) release, based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0).
@@ -8,9 +7,12 @@
 * **(June 14, 2023):** Updated NexToU installation and running demo.
 * **(May 26, 2023):** Released NexToU architecture and training codes for [nnU-Net V1](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv1).
 
-<p align="center">
-  <img src="assets/NexToU.png" alt="NexToU" width="180"/>
-</p>
+<div align="center">
+  
+  <img src="assets/NexToU.png" width="180">
+  
+  | 📃 [**Paper**](https://arxiv.org/abs/2305.15911) | 📂 [**Weight Files**](https://drive.google.com/drive/folders/1TEJtgctH534Ko5r4i79usJvqmXVuLf54?usp=drive_link) |
+</div>
 
 > **Abstract:** *Convolutional neural networks (CNN) and Transformer variants have emerged as the leading medical image segmentation backbones. Nonetheless, due to their limitations in either preserving global image context or efficiently processing irregular shapes in visual objects, these backbones struggle to effectively integrate information from diverse anatomical regions and reduce inter-individual variability, particularly for the vasculature. Motivated by the successful breakthroughs of graph neural networks (GNN) in capturing topological properties and non-Euclidean relationships across various fields, we propose NexToU, a novel hybrid architecture for medical image segmentation. NexToU comprises improved Pool GNN and Swin GNN modules from Vision GNN (ViG) for learning both global and local topological representations while minimizing computational costs. To address the containment and exclusion relationships among various anatomical structures, we reformulate the topological interaction (TI) module based on the nature of binary trees, rapidly encoding the topological constraints into NexToU. Extensive experiments conducted on three datasets (including distinct imaging dimensions, disease types, and imaging modalities) demonstrate that our method consistently outperforms other state-of-the-art (SOTA) architectures.* 
 
@@ -26,6 +28,8 @@ NexToU consists of several main components. The following links will take you di
 - Network Architecture: The network architecture can be found in [NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/network_architecture/NexToU.py) and [NexToU_Encoder_Decoder.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/network_architecture/NexToU_Encoder_Decoder.py).
 - Network Training: The file responsible for network training is [nnUNetTrainer_NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_NexToU.py).
 - Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [bti_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/loss/bti_loss.py). Specifically for the ICA dataset training, it is further adapted in [nnUNetTrainer_NexToU_BTI_ICA_NoMirroring.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_NexToU_BTI_ICA_NoMirroring.py).
+
+TopCoW 2023: https://drive.google.com/drive/folders/1VcH00e-4KgVUOJUJckZEChD0RWwLRyW6?usp=sharing
 
 To integrate NexToU with nnUNet, you can directly download [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) (based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0)) using:
 ```
