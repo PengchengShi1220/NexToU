@@ -7,12 +7,17 @@
   | 📃 [**Paper**](https://arxiv.org/abs/2305.15911) | 📂 [**Weight Files**](https://drive.google.com/drive/folders/1VcH00e-4KgVUOJUJckZEChD0RWwLRyW6?usp=sharing) |
 </div>
 
-> **Abstract:** *Convolutional neural networks (CNN) and Transformer variants have emerged as the leading medical image segmentation backbones. Nonetheless, due to their limitations in either preserving global image context or efficiently processing irregular shapes in visual objects, these backbones struggle to effectively integrate information from diverse anatomical regions and reduce inter-individual variability, particularly for the vasculature. Motivated by the successful breakthroughs of graph neural networks (GNN) in capturing topological properties and non-Euclidean relationships across various fields, we propose NexToU, a novel hybrid architecture for medical image segmentation. NexToU comprises improved Pool GNN and Swin GNN modules from Vision GNN (ViG) for learning both global and local topological representations while minimizing computational costs. To address the containment and exclusion relationships among various anatomical structures, we reformulate the topological interaction (TI) module based on the nature of binary trees, rapidly encoding the topological constraints into NexToU. Extensive experiments conducted on three datasets (including distinct imaging dimensions, disease types, and imaging modalities) demonstrate that our method consistently outperforms other state-of-the-art (SOTA) architectures.* 
-
 ## NexToU Architecture Overview
 
 The proposed NexToU architecture follows a hierarchical U-shaped encoder-decoder structure that includes purely convolutional modules and x topological ones. NexToU incorporates improved Pool GNN and Swin GNN modules from [Vision GNN (ViG)](https://github.com/huawei-noah/Efficient-AI-Backbones/tree/master/vig_pytorch), designed to learn both global and local topological representations while minimizing computational costs. It reformulates the [topological interaction (TI)](https://github.com/TopoXLab/TopoInteraction) module based on the nature of binary trees, rapidly encoding the topological constraints into NexToU. This unique approach enables effective handling of containment and exclusion relationships among various anatomical structures. To maintain consistency in data augmentation and post-processing, we base our NexToU architecture on the [nnU-Net](https://github.com/MIC-DKFZ/nnUNet) framework which can automatically configure itself for any new medical image segmentation task.
 ![NexToU Architecture](/assets/NexToU_architecture.jpg)
+
+## :bulb: News
+* **(Mar 26, 2024):** [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) release, based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0).
+* **(October 13, 2023):** :trophy: :tada: Our NexToU-based solution won the second place 🥈 in both the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) and MICCAI 2023 [CROWN 👑](https://crown.isi.uu.nl/leaderboard/) Challenge.
+* **(September 19, 2023):** Launched NexToU architecture and training codes for [nnU-Net V2](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv2).
+* **(June 14, 2023):** Updated NexToU installation and running demo.
+* **(May 26, 2023):** Released NexToU architecture and training codes for [nnU-Net V1](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv1).
 
 ## Usage
 
@@ -92,12 +97,6 @@ You can use the relevant components of NexToU in your own projects by importing 
 
 If you have any issues or questions, feel free to open an issue on our GitHub repository.
 
-## :bulb: News
-* **(Mar 26, 2024):** [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) release, based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0).
-* **(October 13, 2023):** :trophy: :tada: Our NexToU-based solution won the second place 🥈 in both the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) and MICCAI 2023 [CROWN 👑](https://crown.isi.uu.nl/leaderboard/) Challenge.
-* **(September 19, 2023):** Launched NexToU architecture and training codes for [nnU-Net V2](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv2).
-* **(June 14, 2023):** Updated NexToU installation and running demo.
-* **(May 26, 2023):** Released NexToU architecture and training codes for [nnU-Net V1](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv1).
 
 ## License
 
