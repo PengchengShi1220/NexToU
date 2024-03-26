@@ -27,8 +27,6 @@ NexToU consists of several main components. The following links will take you di
 - Network Training: The file responsible for network training is [nnUNetTrainer_NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_NexToU.py).
 - Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [bti_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/loss/bti_loss.py). Specifically for the ICA dataset training, it is further adapted in [nnUNetTrainer_NexToU_BTI_ICA_NoMirroring.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_NexToU_BTI_ICA_NoMirroring.py).
 
-TopCoW 2023: https://drive.google.com/drive/folders/1VcH00e-4KgVUOJUJckZEChD0RWwLRyW6?usp=sharing
-
 To integrate NexToU with nnUNet, you can directly download [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) (based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0)) using:
 ```
 wget https://github.com/PengchengShi1220/NexToU/releases/download/v1.0.0/NexToU_v1.0_nnU-Net_v2.0.tar.gz
