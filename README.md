@@ -1,12 +1,5 @@
 # NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation
 
-## :bulb: News
-* **(Mar 26, 2024):** [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) release, based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0).
-* **(October 13, 2023):** :trophy: :tada: Our NexToU-based solution won the second place 🥈 in both the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) and MICCAI 2023 [CROWN 👑](https://crown.isi.uu.nl/leaderboard/) Challenge.
-* **(September 19, 2023):** Launched NexToU architecture and training codes for [nnU-Net V2](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv2).
-* **(June 14, 2023):** Updated NexToU installation and running demo.
-* **(May 26, 2023):** Released NexToU architecture and training codes for [nnU-Net V1](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv1).
-
 <div align="center">
   
   <img src="assets/NexToU.png" width="180">
@@ -98,6 +91,13 @@ nnUNetv2_train 115 3d_fullres_nextou 0 -tr nnUNetTrainer_NexToU_BTI_ICA_noMirror
 You can use the relevant components of NexToU in your own projects by importing them from the respective files. Please ensure that you abide by the license agreement while using the code.
 
 If you have any issues or questions, feel free to open an issue on our GitHub repository.
+
+## :bulb: News
+* **(Mar 26, 2024):** [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) release, based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0).
+* **(October 13, 2023):** :trophy: :tada: Our NexToU-based solution won the second place 🥈 in both the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) and MICCAI 2023 [CROWN 👑](https://crown.isi.uu.nl/leaderboard/) Challenge.
+* **(September 19, 2023):** Launched NexToU architecture and training codes for [nnU-Net V2](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv2).
+* **(June 14, 2023):** Updated NexToU installation and running demo.
+* **(May 26, 2023):** Released NexToU architecture and training codes for [nnU-Net V1](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv1).
 
 ## License
 
