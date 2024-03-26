@@ -2,7 +2,7 @@
 [![Paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2305.15911)
 
 ## :bulb: News
-* **(Mar 26, 2024):** NexToU [v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) release, based on nnU-Net V2 ([v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0)).
+* **(Mar 26, 2024):** [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) release, based on ([nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0)).
 * **(October 13, 2023):** :trophy: :tada: Our NexToU-based solution won the second place 🥈 in both the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) and MICCAI 2023 [CROWN 👑](https://crown.isi.uu.nl/leaderboard/) Challenge.
 * **(September 19, 2023):** Launched NexToU architecture and training codes for [nnU-Net V2](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv2).
 * **(June 14, 2023):** Updated NexToU installation and running demo.
@@ -38,7 +38,7 @@ NexToU consists of several main components. The following links will take you di
 - Network Training: The file responsible for network training is [nnUNetTrainer_nextou.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_nextou.py).
 - Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [bti_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/loss/bti_loss.py). Specifically for the ICA dataset training, it is further adapted in [nnUNetTrainer_nextou_bti_ica_noMirroring.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_nextou_bti_ica_noMirroring.py).
 
-To integrate NexToU with nnUNet, you can directly download NexToU [v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) (based on nnU-Net [v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0)) using:
+To integrate NexToU with nnUNet, you can directly download [NexToU v1.0](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.0.0) (based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0)) using:
 ```
 wget https://github.com/PengchengShi1220/NexToU/releases/download/v1.0.0/NexToU_v1.0_nnU-Net_v2.0.tar.gz
 ```
