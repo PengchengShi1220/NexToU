@@ -65,9 +65,9 @@ class nnUNetTrainer_NexToU(nnUNetTrainer):
         network_class = mapping[segmentation_network_class_name]
 
         conv_or_blocks_per_stage = {
-            'n_conv_per_stage'
+            'n_blocks_per_stage'
             if network_class != ResidualEncoderUNet else 'n_blocks_per_stage': configuration_manager.n_conv_per_stage_encoder,
-            'n_conv_per_stage_decoder': configuration_manager.n_conv_per_stage_decoder
+            'n_blocks_per_stage_decoder': configuration_manager.n_conv_per_stage_decoder
         }
 
         # network class name!!
