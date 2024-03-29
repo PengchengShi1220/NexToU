@@ -27,12 +27,8 @@ class NexToU(nn.Module):
                  dropout_op_kwargs: dict = None,
                  nonlin: Union[None, Type[torch.nn.Module]] = None,
                  nonlin_kwargs: dict = None,
-                 deep_supervision: bool = False,
-                 nonlin_first: bool = False
+                 deep_supervision: bool = False
                  ):
-        """
-        nonlin_first: if True you get conv -> nonlin -> norm. Else it's conv -> norm -> nonlin
-        """
         super().__init__()
         if isinstance(n_blocks_per_stage, int):
             n_blocks_per_stage = [n_blocks_per_stage] * n_stages
