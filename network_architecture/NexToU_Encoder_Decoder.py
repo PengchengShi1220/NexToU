@@ -35,7 +35,7 @@ class OptInit:
         self.reduce_ratios = [16, 8, 4, 2] + [1] * (pool_op_kernel_sizes_len - 4)
 
 # https://github.com/MIC-DKFZ/dynamic-network-architectures/blob/main/dynamic_network_architectures/building_blocks/residual_encoders.py
-class NexToU_ResidualEncoder(nn.Module):
+class NexToU_Encoder(nn.Module):
     def __init__(self,
                  input_channels: int,
                  patch_size: List[int],
@@ -240,9 +240,9 @@ class NexToU_ResidualEncoder(nn.Module):
             input_size = [i // j for i, j in zip(input_size, self.strides[s])]
         return output
     
-class NexToU_ResidualDecoder(nn.Module):
+class NexToU_Decoder(nn.Module):
     def __init__(self,
-                 encoder: Union[PlainConvEncoder, ResidualEncoder, NexToU_ResidualEncoder],
+                 encoder: Union[PlainConvEncoder, ResidualEncoder, NexToU_Encoder],
                  patch_size: List[int],
                  strides: Union[int, List[int], Tuple[int, ...]],
                  num_classes: int,
