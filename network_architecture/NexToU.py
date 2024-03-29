@@ -5,10 +5,10 @@ from torch import nn
 from torch.nn.modules.conv import _ConvNd
 from torch.nn.modules.dropout import _DropoutNd
 
-from nnunetv2.training.nnUNetTrainer.variants.network_architecture.NexToU_Res_Encoder_Decoder import NexToU_ResidualEncoder, NexToU_ResidualDecoder
+from nnunetv2.training.nnUNetTrainer.variants.network_architecture.NexToU_Encoder_Decoder import NexToU_Encoder, NexToU_Decoder
 from dynamic_network_architectures.building_blocks.helper import convert_conv_op_to_dim
 
-class NexToU_Res(nn.Module):
+class NexToU(nn.Module):
     def __init__(self,
                  input_channels: int,
                  patch_size: List[int],
@@ -45,11 +45,11 @@ class NexToU_Res(nn.Module):
                                                                 f"as we have resolution stages. here: {n_stages} " \
                                                                 f"stages, so it should have {n_stages - 1} entries. " \
                                                                 f"n_blocks_per_stage_decoder: {n_blocks_per_stage_decoder}"
-        self.encoder = NexToU_ResidualEncoder(input_channels, patch_size, n_stages, features_per_stage, conv_op, kernel_sizes, strides,
+        self.encoder = NexToU_Encoder(input_channels, patch_size, n_stages, features_per_stage, conv_op, kernel_sizes, strides,
                                         n_blocks_per_stage, conv_bias, norm_op, norm_op_kwargs, dropout_op,
                                         dropout_op_kwargs, nonlin, nonlin_kwargs, return_skips=True)
 
-        self.decoder = NexToU_ResidualDecoder(self.encoder, patch_size, strides, num_classes, n_blocks_per_stage_decoder, deep_supervision)
+        self.decoder = NexToU_Decoder(self.encoder, patch_size, strides, num_classes, n_blocks_per_stage_decoder, deep_supervision)
 
     def forward(self, x):
         skips = self.encoder(x)
