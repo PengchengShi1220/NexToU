@@ -61,7 +61,7 @@ cp NexToU-NexToU_nnunetv2/nnUNetTrainer/* nnUNet-2.0/nnunetv2/training/nnUNetTra
 cd nnUNet-2.0 && pip install -e .
 ```
 
-If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. The "UNet_base_num_features" and "unet_max_num_features" parameters should be a multiple of 3. Additionally, you may need to update the "patch_size" parameter to ensure that each dimension is a multiple of 32. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/0ebb816b8d68762eeec7d4f412538d8b448143da/nnUNetPlans.json#L426):
+If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. You may need to update the "patch_size" parameter to ensure that each dimension is a multiple of 32. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/0ebb816b8d68762eeec7d4f412538d8b448143da/nnUNetPlans.json#L426):
 
 ```json
 "3d_fullres_nextou": {
@@ -70,9 +70,7 @@ If you're using the `3d_fullres_nextou` configuration, make sure to update your 
         64,
         224,
         192
-    ],
-    "UNet_base_num_features": 24,
-    "unet_max_num_features": 384
+    ]
 }
 ```
 
