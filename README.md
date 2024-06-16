@@ -63,7 +63,7 @@ pip install timm
 pip install einops
 ```
 
-If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. You may need to update the "patch_size" parameter to ensure that each dimension is a multiple of 32. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/adda65a31c11e2c7c7185b393d01d175113b5668/nnUNetPlans.json#L426):
+If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. You may need to update the "patch_size" parameter to ensure that each dimension is a multiple of 32. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/8247b13751ae1146e86078f2681546e4cd2f54ea/nnUNetPlans.json#L428):
 
 ```json
 "3d_fullres_nextou": {
