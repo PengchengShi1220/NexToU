@@ -59,6 +59,8 @@ cp NexToU-NexToU_nnunetv2/nnUNetTrainer/* nnUNet-2.2/nnunetv2/training/nnUNetTra
 5. Install nnUNet-2.2 with the NexToU related function and run it:
 ```
 cd nnUNet-2.2 && pip install -e .
+pip install timm
+pip install einops
 ```
 
 If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. You may need to update the "patch_size" parameter to ensure that each dimension is a multiple of 32. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/adda65a31c11e2c7c7185b393d01d175113b5668/nnUNetPlans.json#L426):
