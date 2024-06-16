@@ -427,8 +427,8 @@
             "inherits_from": "3d_fullres",
 	    "patch_size": [
                 64,
-                224,
-                192
+                160,
+                160
 	    ]
 	},
         "3d_cascade_fullres": {
