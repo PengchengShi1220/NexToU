@@ -8,7 +8,7 @@
 </div>
 
 ## :bulb: News
-* **(Mar 30, 2024):** [NexToU v1.1](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.1.0) release, based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0).
+* **(Jun 16, 2024):** [NexToU v1.2](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.2.0) release, based on [nnU-Net v2.2](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.2).
 * **(October 13, 2023):** :trophy: :tada: Our NexToU-based solution won the second place 🥈 in both the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard/) and MICCAI 2023 [CROWN 👑](https://crown.isi.uu.nl/leaderboard/) Challenge.
 * **(September 19, 2023):** Launched NexToU architecture and training codes for [nnU-Net V2](https://github.com/PengchengShi1220/NexToU/tree/NexToU_nnunetv2).
 * **(June 14, 2023):** Updated NexToU installation and running demo.
@@ -27,9 +27,9 @@ NexToU consists of several main components. The following links will take you di
 - Network Training: The file responsible for network training is [nnUNetTrainer_NexToU.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_NexToU.py).
 - Binary Topological Interaction (BTI) Loss Function: The BTI loss function is in [bti_loss.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/loss/bti_loss.py). Specifically for the ICA dataset training, it is further adapted in [nnUNetTrainer_NexToU_BTI_ICA_NoMirroring.py](https://github.com/PengchengShi1220/NexToU/blob/NexToU_nnunetv2/nnUNetTrainer/nnUNetTrainer_NexToU_BTI_ICA_NoMirroring.py).
 
-To integrate NexToU with nnUNet, you can directly download [NexToU v1.1](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.1.0) (based on [nnU-Net v2.0](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.0)) using:
+To integrate NexToU with nnUNet, you can directly download [NexToU v1.2](https://github.com/PengchengShi1220/NexToU/releases/tag/v1.2.0) (based on [nnU-Net v2.2](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.2)) using:
 ```
-wget https://github.com/PengchengShi1220/NexToU/releases/download/v1.1.0/NexToU_v1.1_nnU-Net_v2.0.tar.gz
+wget https://github.com/PengchengShi1220/NexToU/releases/download/v1.2.0/NexToU_v1.2_nnU-Net_v2.2.tar.gz
 ```
 
 Alternatively, follow these steps:
@@ -39,26 +39,26 @@ Alternatively, follow these steps:
 git clone https://github.com/PengchengShi1220/NexToU.git
 ```
 
-2. Download v2.0 version of nnUNet using the command:
+2. Download v2.2 version of nnUNet using the command:
 ```
-wget https://github.com/MIC-DKFZ/nnUNet/archive/refs/tags/v2.0.tar.gz
+wget https://github.com/MIC-DKFZ/nnUNet/archive/refs/tags/v2.2.tar.gz
 ```
 
-3. Extract the v2.0.tar.gz file using the command:
+3. Extract the v2.2.tar.gz file using the command:
 ```
-tar -zxvf v2.0.tar.gz
+tar -zxvf v2.2.tar.gz
 ```
 
 4. Copy the NexToU loss functions, network architecture, and network training code files to the corresponding directories in nnUNet-2.0 using the following commands:
 ```
-cp NexToU-NexToU_nnunetv2/loss/* nnUNet-2.0/nnunetv2/training/loss/
-cp NexToU-NexToU_nnunetv2/network_architecture/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/variants/network_architecture/
-cp NexToU-NexToU_nnunetv2/nnUNetTrainer/* nnUNet-2.0/nnunetv2/training/nnUNetTrainer/
+cp NexToU-NexToU_nnunetv2/loss/* nnUNet-2.2/nnunetv2/training/loss/
+cp NexToU-NexToU_nnunetv2/network_architecture/* nnUNet-2.2/nnunetv2/training/nnUNetTrainer/variants/network_architecture/
+cp NexToU-NexToU_nnunetv2/nnUNetTrainer/* nnUNet-2.2/nnunetv2/training/nnUNetTrainer/
 ```
 
-5. Install nnUNet-2.0 with the NexToU related function and run it:
+5. Install nnUNet-2.2 with the NexToU related function and run it:
 ```
-cd nnUNet-2.0 && pip install -e .
+cd nnUNet-2.2 && pip install -e .
 ```
 
 If you're using the `3d_fullres_nextou` configuration, make sure to update your `nnUNet_preprocessed/DatasetXX/nnUNetPlans.json` file. You may need to update the "patch_size" parameter to ensure that each dimension is a multiple of 32. You can add the following JSON snippet to your existing `nnUNetPlans.json`. Have a look at the example provided in the [nnUNetPlans.json](https://github.com/PengchengShi1220/NexToU/blob/adda65a31c11e2c7c7185b393d01d175113b5668/nnUNetPlans.json#L426):
@@ -68,8 +68,8 @@ If you're using the `3d_fullres_nextou` configuration, make sure to update your 
     "inherits_from": "3d_fullres",
     "patch_size": [
         64,
-        224,
-        192
+        160,
+        160
     ]
 }
 ```
