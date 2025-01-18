@@ -57,7 +57,7 @@ The trained model weights (checkpoints) and relevant code are available for down
 ## Data Preparation
 
 - **Preprocessing Steps**:
-  - Normalize images and convert to `.npy` and `.pkl` formats as per nnUNet methodology.
+  - Normalize images and convert to `.npy` and `.pkl` formats as per nnUNet.
   - 
 - **Training Script**:
   ```bash
