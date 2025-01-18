@@ -11,7 +11,7 @@ This README provides instructions for setting up, training, and testing the NexT
 ## Trained Model Weights and Code
 
 The trained model weights (checkpoints) and relevant code are available for download:  
-- **Google Drive Link**: [Download Here](https://drive.google.com/drive/folders/1EPxLTso1fb1YSSnzuYkIUMu5NhuNhf0g)  
+- **Google Drive Link**: [NexToU_Touchstone Benchmark](https://drive.google.com/drive/folders/1EPxLTso1fb1YSSnzuYkIUMu5NhuNhf0g)  
 
 ## Environment Setup
 
