@@ -6,8 +6,7 @@ This README provides instructions for setting up, training, and testing the NexT
 
 ## Dataset
 
-- **Dataset Name**: AbdomenAtlas1.0Mini
-- **Access Link**: [Hugging Face Dataset](https://huggingface.co/datasets/AbdomenAtlas/AbdomenAtlas1.0Mini)
+- **Dataset Name**: [AbdomenAtlas1.0Mini](https://huggingface.co/datasets/AbdomenAtlas/AbdomenAtlas1.0Mini)
 
 ## Trained Model Weights and Code
 
