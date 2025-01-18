@@ -76,7 +76,7 @@ The trained model weights (checkpoints) and relevant code are available for down
 
 ## Citations
 
-- **NexToU Paper**:
+- **NexToU**:
   ```bibtex
   @article{shi2023nextou,
     title={NexToU: Efficient Topology-Aware U-Net for Medical Image Segmentation},
