@@ -57,6 +57,7 @@ The trained model weights (checkpoints) and relevant code are available for down
   - 
 - **Training Script**:
   ```bash
+  cd SuPreM/benchmark_backbones/
   bash train.sh
   ```
   - Modify `datapath` and `preprocesspath` in the script to point to your dataset and preprocessing directories.
@@ -65,6 +66,7 @@ The trained model weights (checkpoints) and relevant code are available for down
 
 - **Testing Script**:
   ```bash
+  cd SuPreM/benchmark_backbones/
   bash test.sh
   ```
   - Modify `test_raw_folder` and `SuPreM_folder` in the script to point to your test data and output directories.
