@@ -65,11 +65,11 @@ The trained model weights (checkpoints) and relevant code are available for down
 ## Testing the Trained Model
 
 - **Testing Script**:
+- Modify the `test_raw_folder`, `test_predict_folder`, and `SuPreM_folder` variables in the `test.sh` script to specify the paths to your test data directory, prediction output directory, and SuPreM code directory, respectively.
   ```bash
   cd SuPreM/benchmark_backbones/
   bash test.sh
   ```
-  - Modify `test_raw_folder` and `SuPreM_folder` in the script to point to your test data and output directories.
 
 ## Citations
 
