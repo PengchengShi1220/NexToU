@@ -13,7 +13,7 @@ This README provides instructions for setting up, training, and testing the NexT
 The trained model weights (checkpoints) and relevant code are available for download:  
 - **Google Drive Link**: [NexToU_Touchstone Benchmark](https://drive.google.com/drive/folders/1EPxLTso1fb1YSSnzuYkIUMu5NhuNhf0g)  
 
-## Environment Setup
+## Setup
 
 1. **Software Requirements**:
    - Python 3.10
@@ -22,12 +22,6 @@ The trained model weights (checkpoints) and relevant code are available for down
 
 2. **Hardware Requirements**:
    - NVIDIA GeForce RTX 3090 24G (or equivalent)
-
-3. **Environment Configuration**:
-   ```bash
-   conda env create -f environment.yml
-   conda activate suprem_NexToU_torch2.2_cu121
-   ```
 
 ## Installation and Usage
 
@@ -40,6 +34,8 @@ The trained model weights (checkpoints) and relevant code are available for down
 
 2. **Install nnUNet**:
    ```bash
+   cd ..
+   cd ..
    cd SuPreM/nnUNet
    pip install -e .
    ```
