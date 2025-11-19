@@ -2,8 +2,6 @@
 
 <div align="center">
   
-  <img src="assets/NexToU.png" width="180">
-  
   | 📃 [**Paper**](https://arxiv.org/abs/2305.15911) | 📂 [**Weight Files**](https://drive.google.com/drive/folders/1VcH00e-4KgVUOJUJckZEChD0RWwLRyW6?usp=sharing) |
 </div>
 
